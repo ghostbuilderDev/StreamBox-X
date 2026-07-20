@@ -1,34 +1,38 @@
 ============================================================
- RAPPORT FINAL D’ANOMALIE HTML VERS APK
+ RAPPORT DIAGNOSTIC HTML VERS APK
 ============================================================
-Dépôt : ghostbuilderDev/StreamBox-X
-Branche : main
-Run : #1
-URL : https://github.com/ghostbuilderDev/StreamBox-X/actions/runs/29770306584
-Date UTC : 2026-07-20 19:03:51 UTC
+Application : StreamBox X
+Package     : dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne
+Version     : 1 (206738480)
+Date UTC    : 2026-07-20 19:22:26 UTC
+Dépôt       : ghostbuilderDev/StreamBox-X
+Branche     : main
+Run         : #2
+URL du run  : https://github.com/ghostbuilderDev/StreamBox-X/actions/runs/29771646104
+État du job : success
 
-=== CODE DE SORTIE GRADLE ===
+=== SIGNATURE ANDROID ===
+Alias name: html-apk-stable
+Valid from: Mon Jul 20 19:02:48 UTC 2026 until: Fri Dec 05 19:02:48 UTC 2053
+	 SHA256: D5:CE:DC:1B:49:8C:90:35:44:05:43:22:9B:1E:B8:E0:74:69:62:F5:72:73:9D:E3:8B:E2:23:8F:66:ED:F0:88
+
+=== ANALYSE AUTOMATIQUE DE LA CAUSE PROBABLE ===
+- Cause non classée automatiquement. Le journal complet est inclus plus bas.
+
+=== CODE DE SORTIE DE LA COMPILATION ===
 0
 
-=== JOURNAL GRADLE ===
+=== ERREURS EXTRAITES DU JOURNAL ===
 
-Welcome to Gradle 8.9!
-
-Here are the highlights of this release:
- - Enhanced Error and Warning Messages
- - IDE Integration Improvements
- - Daemon JVM Information
-
-For more details see https://docs.gradle.org/8.9/release-notes.html
-
+=== 500 DERNIÈRES LIGNES DU JOURNAL GRADLE ===
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.9/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:javaPreCompileDebug
-> Task :app:generateDebugResValues
 > Task :app:checkDebugAarMetadata
+> Task :app:generateDebugResValues
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
@@ -41,20 +45,20 @@ Daemon will be stopped at the end of the build
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
-> Task :app:processDebugManifestForPackage
 > Task :app:mergeDebugAssets
 > Task :app:desugarDebugFileDependencies
-> Task :app:processDebugJavaRes NO-SOURCE
 > Task :app:compressDebugAssets
+> Task :app:processDebugJavaRes NO-SOURCE
+> Task :app:processDebugManifestForPackage
 > Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugJavaResource
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeExtDexDebug
 > Task :app:mergeDebugNativeLibs NO-SOURCE
-> Task :app:mergeLibDexDebug
 > Task :app:stripDebugDebugSymbols NO-SOURCE
+> Task :app:mergeLibDexDebug
 > Task :app:validateSigningDebug
 > Task :app:writeDebugAppMetadata
-> Task :app:mergeDebugJavaResource
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:processDebugResources
 
@@ -68,52 +72,1451 @@ Note: Recompile with -Xlint:deprecation for details.
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/compile-1784574175411.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/compile-1784575331167.json
 
-BUILD SUCCESSFUL in 53s
+BUILD SUCCESSFUL in 19s
 32 actionable tasks: 32 executed
 
-=== VÉRIFICATION APK ===
-APK=apk-output/StreamBox-X-dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne-v206737319-debug.apk
-PACKAGE_ATTENDU=dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne
-VERSION_CODE_ATTENDU=206737319
-SHA256=20437f7da7c56d2553fe22da926bebbdf0885bd48d1a7f92d7b587919206b1b2
-package: name='dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne' versionCode='206737319' versionName='1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'
-sdkVersion:'24'
-targetSdkVersion:'35'
-uses-permission: name='android.permission.INTERNET'
-uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
-uses-permission: name='android.permission.ACCESS_FINE_LOCATION'
-uses-permission: name='android.permission.ACCESS_COARSE_LOCATION'
-uses-permission: name='android.permission.CAMERA'
-Verifies
-Verified using v1 scheme (JAR signing): false
-Verified using v2 scheme (APK Signature Scheme v2): true
-Verified using v3 scheme (APK Signature Scheme v3): false
-Verified using v3.1 scheme (APK Signature Scheme v3.1): false
-Verified using v4 scheme (APK Signature Scheme v4): false
-Verified for SourceStamp: false
-Number of signers: 1
-Signer #1 certificate DN: CN=HTML APK Builder, OU=Local Apps, O=GhostBuilder, L=Paris, ST=Ile-de-France, C=FR
-Signer #1 certificate SHA-256 digest: d5cedc1b498c9035440543229b1eb8e0746962f572739de38be2238f66edf088
-Signer #1 certificate SHA-1 digest: ba06ea0f9d2a5cf52ed0381958513521f5fc298e
-Signer #1 certificate MD5 digest: 60f27ce4542fb5c3301c4774f73230d1
-Signer #1 key algorithm: RSA
-Signer #1 key size (bits): 2048
-Signer #1 public key SHA-256 digest: 7789b6ebde4cd05931c6412ddeafc98074218c040db1f02aef9e8e3e39404aa3
-Signer #1 public key SHA-1 digest: 2bf6ca160474522fe501d4a7f45a57137a1892c3
-Signer #1 public key MD5 digest: d0bd0170217e2e6ce9f42870f971573e
+=== VERSIONS DE L’ENVIRONNEMENT ===
+openjdk version "17.0.19" 2026-04-21
+OpenJDK Runtime Environment Temurin-17.0.19+10 (build 17.0.19+10)
+OpenJDK 64-Bit Server VM Temurin-17.0.19+10 (build 17.0.19+10, mixed mode, sharing)
 
-=== DIAGNOSTIC LOCAL HTML ===
+------------------------------------------------------------
+Gradle 8.9
+------------------------------------------------------------
+
+Build time:    2024-07-11 14:37:41 UTC
+Revision:      d536ef36a19186ccc596d8817123e5445f30fef8
+
+Kotlin:        1.9.23
+Groovy:        3.0.21
+Ant:           Apache Ant(TM) version 1.10.13 compiled on January 4 2023
+Launcher JVM:  17.0.19 (Eclipse Adoptium 17.0.19+10)
+Daemon JVM:    /usr/lib/jvm/temurin-17-jdk-amd64 (no JDK specified, using current Java home)
+OS:            Linux 6.17.0-1020-azure amd64
+
+ANDROID_HOME=/usr/local/lib/android/sdk
+ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+Loading package information...                                                  Loading local repository...                                                     [=========                              ] 25% Loading local repository...       [=========                              ] 25% Fetch remote repository...        [=======================================] 100% Fetch remote repository...       
+Installed packages:
+  Path                               | Version       | Description                      | Location                          
+  -------                            | -------       | -------                          | -------                           
+  build-tools;34.0.0                 | 34.0.0        | Android SDK Build-Tools 34       | build-tools/34.0.0                
+  build-tools;35.0.0                 | 35.0.0        | Android SDK Build-Tools 35       | build-tools/35.0.0                
+  build-tools;35.0.1                 | 35.0.1        | Android SDK Build-Tools 35.0.1   | build-tools/35.0.1                
+  build-tools;36.0.0                 | 36.0.0        | Android SDK Build-Tools 36       | build-tools/36.0.0                
+  build-tools;36.1.0                 | 36.1.0        | Android SDK Build-Tools 36.1     | build-tools/36.1.0                
+  build-tools;37.0.0                 | 37.0.0        | Android SDK Build-Tools 37       | build-tools/37.0.0                
+  cmake;3.31.5                       | 3.31.5        | CMake 3.31.5                     | cmake/3.31.5                      
+  cmake;4.1.2                        | 4.1.2         | CMake 4.1.2                      | cmake/4.1.2                       
+  emulator                           | 36.6.11       | Android Emulator                 | emulator                          
+  extras;android;m2repository        | 47.0.0        | Android Support Repository       | extras/android/m2repository       
+  extras;google;google_play_services | 49            | Google Play services             | extras/google/google_play_services
+  extras;google;m2repository         | 58            | Google Repository                | extras/google/m2repository        
+  ndk;27.3.13750724                  | 27.3.13750724 | NDK (Side by side) 27.3.13750724 | ndk/27.3.13750724                 
+  ndk;28.2.13676358                  | 28.2.13676358 | NDK (Side by side) 28.2.13676358 | ndk/28.2.13676358                 
+  ndk;29.0.14206865                  | 29.0.14206865 | NDK (Side by side) 29.0.14206865 | ndk/29.0.14206865                 
+  platform-tools                     | 37.0.0        | Android SDK Platform-Tools       | platform-tools                    
+  platforms;android-34               | 3             | Android SDK Platform 34          | platforms/android-34              
+  platforms;android-34-ext10         | 1             | Android SDK Platform 34-ext10    | platforms/android-34-ext10        
+  platforms;android-34-ext11         | 1             | Android SDK Platform 34-ext11    | platforms/android-34-ext11        
+  platforms;android-34-ext12         | 1             | Android SDK Platform 34-ext12    | platforms/android-34-ext12        
+  platforms;android-34-ext8          | 1             | Android SDK Platform 34-ext8     | platforms/android-34-ext8         
+  platforms;android-35               | 2             | Android SDK Platform 35          | platforms/android-35              
+  platforms;android-35-ext14         | 1             | Android SDK Platform 35-ext14    | platforms/android-35-ext14        
+  platforms;android-35-ext15         | 1             | Android SDK Platform 35-ext15    | platforms/android-35-ext15        
+  platforms;android-36               | 2             | Android SDK Platform 36          | platforms/android-36              
+  platforms;android-36-ext18         | 1             | Android SDK Platform 36-ext18    | platforms/android-36-ext18        
+  platforms;android-36-ext19         | 1             | Android SDK Platform 36-ext19    | platforms/android-36-ext19        
+  platforms;android-36.1             | 1             | Android SDK Platform 36.1        | platforms/android-36.1            
+  platforms;android-37.0             | 2             | Android SDK Platform 37.0        | platforms/android-37.0            
+  platforms;android-37.1             | 1             | Android SDK Platform 37.1        | platforms/android-37.1            
+
+
+=== INFORMATIONS SUR project.zip ===
+-rw-r--r-- 1 runner runner 67K Jul 20 19:21 project.zip
+af090de4537399c369442e10d4d16ad2928af29298725272644c576ef547d9c6  project.zip
+Archive:  project.zip
+    testing: LOCAL_WEB_DIAGNOSTIC.txt   OK
+    testing: settings.gradle.kts      OK
+    testing: build.gradle.kts         OK
+    testing: gradle.properties        OK
+    testing: app/build.gradle.kts     OK
+    testing: app/proguard-rules.pro   OK
+    testing: app/src/main/AndroidManifest.xml   OK
+    testing: app/src/main/java/dev/ghostbuilderdev/raplabpro/streamboxx/a0lnczne/MainActivity.java   OK
+    testing: app/src/main/java/dev/ghostbuilderdev/raplabpro/streamboxx/a0lnczne/BuildForegroundService.java   OK
+    testing: app/src/main/res/values/strings.xml   OK
+    testing: app/src/main/res/values/colors.xml   OK
+    testing: app/src/main/res/values/styles.xml   OK
+    testing: app/src/main/res/values-v31/styles.xml   OK
+    testing: .github/workflows/build-apk.yml   OK
+    testing: .gitignore               OK
+    testing: README.md                OK
+    testing: app/src/main/assets/www/index.html   OK
+    testing: app/src/main/assets/www/icons/icon-192.png   OK
+    testing: app/src/main/assets/www/icons/icon-512.png   OK
+    testing: app/src/main/assets/www/styles.css   OK
+    testing: app/src/main/assets/www/app.js   OK
+    testing: app/src/main/assets/www/manifest.webmanifest   OK
+    testing: app/src/main/assets/www/service-worker.js   OK
+    testing: app/src/main/assets/www/android-config.json   OK
+    testing: app/src/main/assets/www/README.txt   OK
+    testing: app/src/main/assets/www/android-bridge.js   OK
+    testing: app/src/main/res/mipmap-mdpi/ic_launcher.png   OK
+    testing: app/src/main/res/mipmap-hdpi/ic_launcher.png   OK
+    testing: app/src/main/res/mipmap-xhdpi/ic_launcher.png   OK
+    testing: app/src/main/res/mipmap-xxhdpi/ic_launcher.png   OK
+    testing: app/src/main/res/mipmap-xxxhdpi/ic_launcher.png   OK
+    testing: SOURCE_INFO.json         OK
+No errors detected in compressed data of project.zip.
+
+=== ARBORESCENCE DU PROJET GÉNÉRÉ ===
+generated/.github/workflows/build-apk.yml | 18645 octets
+generated/.gitignore | 54 octets
+generated/.gradle/8.9/checksums/checksums.lock | 17 octets
+generated/.gradle/8.9/dependencies-accessors/gc.properties | 0 octets
+generated/.gradle/8.9/executionHistory/executionHistory.bin | 105224 octets
+generated/.gradle/8.9/executionHistory/executionHistory.lock | 17 octets
+generated/.gradle/8.9/fileChanges/last-build.bin | 1 octets
+generated/.gradle/8.9/fileHashes/fileHashes.bin | 25247 octets
+generated/.gradle/8.9/fileHashes/fileHashes.lock | 17 octets
+generated/.gradle/8.9/fileHashes/resourceHashesCache.bin | 18735 octets
+generated/.gradle/8.9/gc.properties | 0 octets
+generated/.gradle/buildOutputCleanup/buildOutputCleanup.lock | 17 octets
+generated/.gradle/buildOutputCleanup/cache.properties | 49 octets
+generated/.gradle/buildOutputCleanup/outputFiles.bin | 22169 octets
+generated/.gradle/file-system.probe | 8 octets
+generated/.gradle/vcs-1/gc.properties | 0 octets
+generated/.signing/html-apk-stable.p12 | 2810 octets
+generated/.signing/html-apk-stable.sha256 | 65 octets
+generated/LOCAL_WEB_DIAGNOSTIC.txt | 935 octets
+generated/README.md | 1229 octets
+generated/SOURCE_INFO.json | 1183 octets
+generated/app/build.gradle.kts | 1565 octets
+generated/app/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json | 2 octets
+generated/app/build/intermediates/apk_ide_redirect_file/debug/createDebugApkListingFileRedirect/redirect.txt | 81 octets
+generated/app/build/intermediates/app_metadata/debug/writeDebugAppMetadata/app-metadata.properties | 56 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/README.txt | 1164 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/android-bridge.js | 1581 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/android-config.json | 571 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/app.js | 32595 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/icons/icon-192.png | 1639 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/icons/icon-512.png | 4589 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/index.html | 16426 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/manifest.webmanifest | 488 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/service-worker.js | 730 octets
+generated/app/build/intermediates/assets/debug/mergeDebugAssets/www/styles.css | 22970 octets
+generated/app/build/intermediates/compatible_screen_manifest/debug/createDebugCompatibleScreenManifests/output-metadata.json | 225 octets
+generated/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/processDebugResources/R.jar | 2864 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/README.txt.jar | 881 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/android-bridge.js.jar | 611 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/android-config.json.jar | 493 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/app.js.jar | 11017 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/index.html.jar | 5234 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/manifest.webmanifest.jar | 440 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/service-worker.js.jar | 520 octets
+generated/app/build/intermediates/compressed_assets/debug/compressDebugAssets/out/assets/www/styles.css.jar | 7278 octets
+generated/app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/dirs_bucket_0/graph.bin | 4334 octets
+generated/app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/dirs_bucket_1/graph.bin | 2717 octets
+generated/app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_90efbce981d56de048d49f0d6c4e466bf6ae5befb600b1a745cc2cde63b42382_bucket_0/graph.bin | 235 octets
+generated/app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_90efbce981d56de048d49f0d6c4e466bf6ae5befb600b1a745cc2cde63b42382_bucket_1/graph.bin | 235 octets
+generated/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex | 2136 octets
+generated/app/build/intermediates/dex/debug/mergeProjectDexDebug/8/classes.dex | 30096 octets
+generated/app/build/intermediates/dex_archive_input_jar_hashes/debug/dexBuilderDebug/out | 423 octets
+generated/app/build/intermediates/dex_number_of_buckets_file/debug/dexBuilderDebug/out | 1 octets
+generated/app/build/intermediates/incremental/debug-mergeJavaRes/merge-state | 478 octets
+generated/app/build/intermediates/incremental/debug/mergeDebugResources/compile-file-map.properties | 1227 octets
+generated/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v31/values-v31.xml | 452 octets
+generated/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values/values.xml | 838 octets
+generated/app/build/intermediates/incremental/debug/mergeDebugResources/merger.xml | 4406 octets
+generated/app/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties | 1237 octets
+generated/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir/values-v31/values-v31.xml | 452 octets
+generated/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir/values/values.xml | 838 octets
+generated/app/build/intermediates/incremental/debug/packageDebugResources/merger.xml | 4406 octets
+generated/app/build/intermediates/incremental/mergeDebugAssets/merger.xml | 2093 octets
+generated/app/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml | 500 octets
+generated/app/build/intermediates/incremental/mergeDebugShaders/merger.xml | 500 octets
+generated/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt | 373 octets
+generated/app/build/intermediates/incremental/packageDebug/tmp/debug/zip-cache/androidResources | 553 octets
+generated/app/build/intermediates/incremental/packageDebug/tmp/debug/zip-cache/javaResources0 | 22 octets
+generated/app/build/intermediates/linked_resources_binary_format/debug/processDebugResources/linked-resources-binary-format-debug.ap_ | 21469 octets
+generated/app/build/intermediates/linked_resources_binary_format/debug/processDebugResources/output-metadata.json | 459 octets
+generated/app/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt | 147 octets
+generated/app/build/intermediates/manifest_merge_blame_file/debug/processDebugMainManifest/manifest-merger-blame-debug-report.txt | 7945 octets
+generated/app/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/base.jar | 22 octets
+generated/app/build/intermediates/merged_manifest/debug/processDebugMainManifest/AndroidManifest.xml | 2609 octets
+generated/app/build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml | 2609 octets
+generated/app/build/intermediates/merged_manifests/debug/processDebugManifest/output-metadata.json | 424 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/mipmap-hdpi_ic_launcher.png.flat | 1328 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/mipmap-mdpi_ic_launcher.png.flat | 1064 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/mipmap-xhdpi_ic_launcher.png.flat | 2044 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/mipmap-xxhdpi_ic_launcher.png.flat | 5524 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/mipmap-xxxhdpi_ic_launcher.png.flat | 7848 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/values-v31_values-v31.arsc.flat | 616 octets
+generated/app/build/intermediates/merged_res/debug/mergeDebugResources/values_values.arsc.flat | 988 octets
+generated/app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/multi-v2/mergeDebugResources.json | 2787 octets
+generated/app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/multi-v2/values-v31.json | 685 octets
+generated/app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/multi-v2/values.json | 2140 octets
+generated/app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/single/mergeDebugResources.json | 1214 octets
+generated/app/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json | 2 octets
+generated/app/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt | 15 octets
+generated/app/build/intermediates/packaged_manifests/debug/processDebugManifestForPackage/AndroidManifest.xml | 2609 octets
+generated/app/build/intermediates/packaged_manifests/debug/processDebugManifestForPackage/output-metadata.json | 426 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/mipmap-hdpi-v4/ic_launcher.png | 1172 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/mipmap-mdpi-v4/ic_launcher.png | 905 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/mipmap-xhdpi-v4/ic_launcher.png | 1882 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/mipmap-xxhdpi-v4/ic_launcher.png | 5361 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/mipmap-xxxhdpi-v4/ic_launcher.png | 7686 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/values-v31/values-v31.xml | 452 octets
+generated/app/build/intermediates/packaged_res/debug/packageDebugResources/values/values.xml | 838 octets
+generated/app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/3398a73cc18900f15a1dc4aa5679c4516bcdbc74f88d1331c4ea64ca0999d278_1.jar | 1064 octets
+generated/app/build/intermediates/runtime_symbol_list/debug/processDebugResources/R.txt | 167 octets
+generated/app/build/intermediates/signing_config_versions/debug/writeDebugSigningConfigVersions/signing-config-versions.json | 96 octets
+generated/app/build/intermediates/source_set_path_map/debug/mapDebugSourceSetPaths/file-map.txt | 1155 octets
+generated/app/build/intermediates/stable_resource_ids_file/debug/processDebugResources/stableIds.txt | 407 octets
+generated/app/build/outputs/apk/debug/app-debug.apk | 74650 octets
+generated/app/build/outputs/apk/debug/output-metadata.json | 437 octets
+generated/app/build/outputs/logs/manifest-merger-debug-report.txt | 8997 octets
+generated/app/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin | 41940 octets
+generated/app/proguard-rules.pro | 36 octets
+generated/app/src/main/AndroidManifest.xml | 2159 octets
+generated/app/src/main/assets/www/README.txt | 1164 octets
+generated/app/src/main/assets/www/android-bridge.js | 1581 octets
+generated/app/src/main/assets/www/android-config.json | 571 octets
+generated/app/src/main/assets/www/app.js | 32595 octets
+generated/app/src/main/assets/www/icons/icon-192.png | 1639 octets
+generated/app/src/main/assets/www/icons/icon-512.png | 4589 octets
+generated/app/src/main/assets/www/index.html | 16426 octets
+generated/app/src/main/assets/www/manifest.webmanifest | 488 octets
+generated/app/src/main/assets/www/service-worker.js | 730 octets
+generated/app/src/main/assets/www/styles.css | 22970 octets
+generated/app/src/main/java/dev/ghostbuilderdev/raplabpro/streamboxx/a0lnczne/BuildForegroundService.java | 5681 octets
+generated/app/src/main/java/dev/ghostbuilderdev/raplabpro/streamboxx/a0lnczne/MainActivity.java | 34045 octets
+generated/app/src/main/res/mipmap-hdpi/ic_launcher.png | 1172 octets
+generated/app/src/main/res/mipmap-mdpi/ic_launcher.png | 905 octets
+generated/app/src/main/res/mipmap-xhdpi/ic_launcher.png | 1882 octets
+generated/app/src/main/res/mipmap-xxhdpi/ic_launcher.png | 5361 octets
+generated/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png | 7686 octets
+generated/app/src/main/res/values-v31/styles.xml | 452 octets
+generated/app/src/main/res/values/colors.xml | 161 octets
+generated/app/src/main/res/values/strings.xml | 112 octets
+generated/app/src/main/res/values/styles.xml | 691 octets
+generated/build.gradle.kts | 74 octets
+generated/gradle.properties | 101 octets
+generated/settings.gradle.kts | 329 octets
+
+=== settings.gradle.kts ===
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "StreamBox X"
+include(":app")
+
+=== build.gradle.kts RACINE ===
+plugins {
+    id("com.android.application") version "8.7.3" apply false
+}
+
+=== app/build.gradle.kts ===
+plugins {
+    id("com.android.application")
+}
+
+val stableKeystore = rootProject.file(".signing/html-apk-stable.p12")
+val stableStorePassword = "HTML_APK_BUILDER_STABLE_2026"
+val stableKeyAlias = "html-apk-stable"
+val stableKeyPassword = "HTML_APK_BUILDER_STABLE_2026"
+
+android {
+    namespace = "dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 206738480
+        versionName = "1"
+    }
+
+    signingConfigs {
+        create("stable") {
+            if (stableKeystore.exists()) {
+                storeFile = stableKeystore
+                storePassword = stableStorePassword
+                keyAlias = stableKeyAlias
+                keyPassword = stableKeyPassword
+                storeType = "PKCS12"
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            if (stableKeystore.exists()) {
+                signingConfig = signingConfigs.getByName("stable")
+            }
+        }
+
+        release {
+            isMinifyEnabled = false
+            if (stableKeystore.exists()) {
+                signingConfig = signingConfigs.getByName("stable")
+            }
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+=== gradle.properties ===
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+org.gradle.daemon=false
+org.gradle.parallel=false
+
+=== AndroidManifest.xml ===
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <service
+            android:name=".BuildForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+=== FICHIERS JAVA ===
+--- generated/app/src/main/java/dev/ghostbuilderdev/raplabpro/streamboxx/a0lnczne/MainActivity.java ---
+package dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.view.View;
+import android.view.WindowManager;
+import android.webkit.DownloadListener;
+import android.webkit.GeolocationPermissions;
+import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
+import android.webkit.URLUtil;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class MainActivity extends Activity {
+    private static final int REQUEST_FILE_CHOOSER = 1001;
+    private static final int REQUEST_LOCATION = 1002;
+    private static final int REQUEST_MEDIA = 1003;
+    private static final int REQUEST_NOTIFICATIONS = 1004;
+    private static final int REQUEST_STORAGE = 1005;
+
+    private static final boolean ENABLE_LOCATION = true;
+    private static final boolean ENABLE_CAMERA = true;
+    private static final boolean ENABLE_MICROPHONE = true;
+    private static final boolean OPEN_EXTERNAL_LINKS = true;
+
+    private WebView webView;
+    private ValueCallback<Uri[]> fileChooserCallback;
+    private boolean fileChooserAllowsMultiple = false;
+    private String pendingGeoOrigin;
+    private GeolocationPermissions.Callback pendingGeoCallback;
+    private PermissionRequest pendingMediaRequest;
+
+    @SuppressLint({"SetJavaScriptEnabled", "AllowFileAccessFromFileURLs"})
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        
+        getWindow().setStatusBarColor(Color.parseColor("#FF7A1A"));
+        getWindow().setNavigationBarColor(Color.parseColor("#11141B"));
+
+        webView = new WebView(this);
+        setContentView(webView);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setSupportMultipleWindows(false);
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+
+        webView.setWebViewClient(new WebViewClient() {
+            private boolean handleUri(Uri uri) {
+                if (uri == null) return false;
+                String scheme = uri.getScheme() == null ? "" : uri.getScheme().toLowerCase();
+                if ("file".equals(scheme) || "about".equals(scheme) || "data".equals(scheme) || "blob".equals(scheme)) {
+                    return false;
+                }
+                if (("http".equals(scheme) || "https".equals(scheme)) && !OPEN_EXTERNAL_LINKS) {
+                    return false;
+                }
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    return true;
+                } catch (Exception error) {
+                    Toast.makeText(MainActivity.this, "Impossible d’ouvrir ce lien", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return handleUri(request.getUrl());
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return handleUri(Uri.parse(url));
+            }
+        });
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(
+                    WebView view,
+                    ValueCallback<Uri[]> callback,
+                    FileChooserParams params
+            ) {
+                if (fileChooserCallback != null) {
+                    fileChooserCallback.onReceiveValue(null);
+                }
+
+                fileChooserCallback = callback;
+
+                // Android System WebView peut annoncer à tort un mode
+                // fichier unique, même pour <input type="file" multiple>.
+                // On ouvre donc toujours le sélecteur système en mode multiple.
+                fileChooserAllowsMultiple = true;
+
+                try {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    intent.addFlags(
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                    );
+
+                    if (params != null) {
+                        String[] rawTypes = params.getAcceptTypes();
+                        List<String> acceptedTypes = new ArrayList<>();
+
+                        if (rawTypes != null) {
+                            for (String rawType : rawTypes) {
+                                if (rawType == null) continue;
+                                String type = rawType.trim();
+                                if (!type.isEmpty() &&
+                                        !acceptedTypes.contains(type)) {
+                                    acceptedTypes.add(type);
+                                }
+                            }
+                        }
+
+                        if (acceptedTypes.size() == 1) {
+                            intent.setType(acceptedTypes.get(0));
+                        } else if (acceptedTypes.size() > 1) {
+                            intent.putExtra(
+                                    Intent.EXTRA_MIME_TYPES,
+                                    acceptedTypes.toArray(new String[0])
+                            );
+                        }
+                    }
+
+                    startActivityForResult(
+                            Intent.createChooser(
+                                    intent,
+                                    "Sélectionner un ou plusieurs fichiers"
+                            ),
+                            REQUEST_FILE_CHOOSER
+                    );
+                    return true;
+                } catch (Exception error) {
+                    fileChooserCallback = null;
+                    fileChooserAllowsMultiple = false;
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Sélecteur de fichier indisponible",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    return false;
+                }
+            }
+
+            @Override
+            public void onGeolocationPermissionsShowPrompt(
+                    String origin,
+                    GeolocationPermissions.Callback callback
+            ) {
+                if (!ENABLE_LOCATION) {
+                    callback.invoke(origin, false, false);
+                    return;
+                }
+                if (hasLocationPermission()) {
+                    callback.invoke(origin, true, false);
+                    return;
+                }
+                pendingGeoOrigin = origin;
+                pendingGeoCallback = callback;
+                requestPermissions(
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                        },
+                        REQUEST_LOCATION
+                );
+            }
+
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                handleMediaPermissionRequest(request);
+            }
+        });
+
+        webView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(
+                    String url,
+                    String userAgent,
+                    String contentDisposition,
+                    String mimeType,
+                    long contentLength
+            ) {
+                try {
+                    if (url.startsWith("blob:") || url.startsWith("data:")) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Le pont d’enregistrement Android n’a pas reçu ce fichier.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                        return;
+                    }
+                    DownloadManager.Request download =
+                            new DownloadManager.Request(Uri.parse(url));
+                    String filename =
+                            URLUtil.guessFileName(url, contentDisposition, mimeType);
+                    download.setTitle(filename);
+                    download.setDescription("Téléchargement depuis StreamBox X");
+                    download.setMimeType(mimeType);
+                    if (userAgent != null) {
+                        download.addRequestHeader("User-Agent", userAgent);
+                    }
+                    download.setNotificationVisibility(
+                            DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                    );
+                    download.setDestinationInExternalPublicDir(
+                            Environment.DIRECTORY_DOWNLOADS,
+                            filename
+                    );
+                    DownloadManager manager =
+                            (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    if (manager != null) manager.enqueue(download);
+                } catch (Exception error) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    } catch (Exception ignored) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Téléchargement impossible",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+            }
+        });
+
+        webView.addJavascriptInterface(new NativeBridge(this), "AndroidApp");
+        webView.loadUrl("file:///android_asset/www/index.html");
+    }
+
+    private boolean hasLocationPermission() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void handleMediaPermissionRequest(PermissionRequest request) {
+        List<String> missing = new ArrayList<>();
+
+        for (String resource : request.getResources()) {
+            if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)
+                    && ENABLE_CAMERA
+                    && checkSelfPermission(Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                missing.add(Manifest.permission.CAMERA);
+            }
+            if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)
+                    && ENABLE_MICROPHONE
+                    && checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                missing.add(Manifest.permission.RECORD_AUDIO);
+            }
+        }
+
+        if (!missing.isEmpty()) {
+            pendingMediaRequest = request;
+            requestPermissions(missing.toArray(new String[0]), REQUEST_MEDIA);
+        } else {
+            grantAllowedMedia(request);
+        }
+    }
+
+    private void grantAllowedMedia(PermissionRequest request) {
+        List<String> allowed = new ArrayList<>();
+
+        for (String resource : request.getResources()) {
+            if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)
+                    && ENABLE_CAMERA
+                    && checkSelfPermission(Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED) {
+                allowed.add(resource);
+            }
+            if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)
+                    && ENABLE_MICROPHONE
+                    && checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                    == PackageManager.PERMISSION_GRANTED) {
+                allowed.add(resource);
+            }
+        }
+
+        if (allowed.isEmpty()) {
+            request.deny();
+        } else {
+            request.grant(allowed.toArray(new String[0]));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_FILE_CHOOSER && fileChooserCallback != null) {
+            List<Uri> selectedUris = new ArrayList<>();
+
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                ClipData clipData = data.getClipData();
+
+                if (clipData != null) {
+                    for (int index = 0; index < clipData.getItemCount(); index++) {
+                        Uri uri = clipData.getItemAt(index).getUri();
+                        if (uri != null && !selectedUris.contains(uri)) {
+                            selectedUris.add(uri);
+                        }
+                    }
+                }
+
+                Uri singleUri = data.getData();
+                if (singleUri != null && !selectedUris.contains(singleUri)) {
+                    selectedUris.add(singleUri);
+                }
+
+                int grantedFlags = data.getFlags() &
+                        (Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                for (Uri uri : selectedUris) {
+                    try {
+                        getContentResolver().takePersistableUriPermission(
+                                uri,
+                                grantedFlags &
+                                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        );
+                    } catch (Exception ignored) {
+                        // Certains fournisseurs Android ne permettent pas
+                        // la conservation durable de l'autorisation.
+                    }
+                }
+
+                if (selectedUris.isEmpty()) {
+                    Uri[] parsed =
+                            WebChromeClient.FileChooserParams.parseResult(
+                                    resultCode,
+                                    data
+                            );
+                    if (parsed != null) {
+                        for (Uri uri : parsed) {
+                            if (uri != null && !selectedUris.contains(uri)) {
+                                selectedUris.add(uri);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Uri[] result = selectedUris.isEmpty()
+                    ? null
+                    : selectedUris.toArray(new Uri[0]);
+
+            fileChooserCallback.onReceiveValue(result);
+            fileChooserCallback = null;
+            fileChooserAllowsMultiple = false;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_LOCATION && pendingGeoCallback != null) {
+            pendingGeoCallback.invoke(
+                    pendingGeoOrigin,
+                    hasLocationPermission(),
+                    false
+            );
+            pendingGeoCallback = null;
+            pendingGeoOrigin = null;
+        }
+
+        if (requestCode == REQUEST_MEDIA && pendingMediaRequest != null) {
+            grantAllowedMedia(pendingMediaRequest);
+            pendingMediaRequest = null;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.removeJavascriptInterface("AndroidApp");
+            webView.stopLoading();
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
+    }
+
+    public static final class NativeBridge {
+        private final Activity activity;
+        private final Map<String, ByteArrayOutputStream> fileBuffers =
+                new ConcurrentHashMap<>();
+        private final Map<String, String> fileNames =
+                new ConcurrentHashMap<>();
+        private final Map<String, String> fileMimeTypes =
+                new ConcurrentHashMap<>();
+
+        NativeBridge(Activity activity) {
+            this.activity = activity;
+        }
+
+
+        private String cleanFilename(String value) {
+            String name = value == null ? "fichier.bin" : value.trim();
+            StringBuilder cleaned = new StringBuilder();
+
+            for (int index = 0; index < name.length(); index++) {
+                char character = name.charAt(index);
+                int code = character;
+
+                boolean forbidden =
+                        code == 92 ||   // antislash
+                        code == 47 ||   // slash
+                        code == 58 ||   // deux-points
+                        code == 42 ||   // astérisque
+                        code == 63 ||   // point d'interrogation
+                        code == 34 ||   // guillemet
+                        code == 60 ||   // inférieur
+                        code == 62 ||   // supérieur
+                        code == 124;    // barre verticale
+
+                cleaned.append(forbidden ? '_' : character);
+            }
+
+            String safeName = cleaned.toString().trim();
+            return safeName.isEmpty() ? "fichier.bin" : safeName;
+        }
+
+        private File uniqueLegacyFile(File directory, String filename) {
+            File target = new File(directory, filename);
+            if (!target.exists()) return target;
+            int dot = filename.lastIndexOf('.');
+            String base = dot > 0 ? filename.substring(0, dot) : filename;
+            String extension = dot > 0 ? filename.substring(dot) : "";
+            int index = 1;
+            while (target.exists()) {
+                target = new File(
+                        directory,
+                        base + " (" + index + ")" + extension
+                );
+                index++;
+            }
+            return target;
+        }
+
+        private boolean saveBytesToDownloads(
+                byte[] bytes,
+                String requestedFilename,
+                String requestedMimeType
+        ) {
+            final String filename = cleanFilename(requestedFilename);
+            final String mimeType =
+                    requestedMimeType == null ||
+                    requestedMimeType.trim().isEmpty()
+                            ? "application/octet-stream"
+                            : requestedMimeType.trim();
+
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= 29) {
+                    ContentResolver resolver =
+                            activity.getContentResolver();
+                    ContentValues values = new ContentValues();
+                    values.put(
+                            MediaStore.MediaColumns.DISPLAY_NAME,
+                            filename
+                    );
+                    values.put(
+                            MediaStore.MediaColumns.MIME_TYPE,
+                            mimeType
+                    );
+                    values.put(
+                            MediaStore.MediaColumns.RELATIVE_PATH,
+                            Environment.DIRECTORY_DOWNLOADS
+                    );
+                    values.put(
+                            MediaStore.MediaColumns.IS_PENDING,
+                            1
+                    );
+
+                    Uri uri = resolver.insert(
+                            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                            values
+                    );
+                    if (uri == null) {
+                        throw new IllegalStateException(
+                                "Android n'a pas créé le fichier."
+                        );
+                    }
+
+                    try (OutputStream output =
+                                 resolver.openOutputStream(uri)) {
+                        if (output == null) {
+                            throw new IllegalStateException(
+                                    "Flux d'écriture indisponible."
+                            );
+                        }
+                        output.write(bytes);
+                        output.flush();
+                    } catch (Exception error) {
+                        resolver.delete(uri, null, null);
+                        throw error;
+                    }
+
+                    values.clear();
+                    values.put(MediaStore.MediaColumns.IS_PENDING, 0);
+                    resolver.update(uri, values, null, null);
+                } else {
+                    if (
+                            activity.checkSelfPermission(
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.requestPermissions(
+                                        new String[]{
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                        },
+                                        REQUEST_STORAGE
+                                );
+                                Toast.makeText(
+                                        activity,
+                                        "Autorise le stockage puis relance le téléchargement.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                        return false;
+                    }
+
+                    File directory =
+                            Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_DOWNLOADS
+                            );
+                    if (!directory.exists() && !directory.mkdirs()) {
+                        throw new IllegalStateException(
+                                "Dossier Téléchargements inaccessible."
+                        );
+                    }
+
+                    File target = uniqueLegacyFile(directory, filename);
+                    try (FileOutputStream output =
+                                 new FileOutputStream(target)) {
+                        output.write(bytes);
+                        output.flush();
+                    }
+
+                    MediaScannerConnection.scanFile(
+                            activity,
+                            new String[]{target.getAbsolutePath()},
+                            new String[]{mimeType},
+                            null
+                    );
+                }
+
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(
+                                activity,
+                                "Fichier enregistré dans Téléchargements",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
+                return true;
+            } catch (final Exception error) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(
+                                activity,
+                                "Enregistrement impossible : " +
+                                        error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
+                return false;
+            }
+        }
+
+        @JavascriptInterface
+        public String beginFileDownload(
+                String filename,
+                String mimeType
+        ) {
+            String sessionId = UUID.randomUUID().toString();
+            fileBuffers.put(sessionId, new ByteArrayOutputStream());
+            fileNames.put(sessionId, cleanFilename(filename));
+            fileMimeTypes.put(
+                    sessionId,
+                    mimeType == null
+                            ? "application/octet-stream"
+                            : mimeType
+            );
+            return sessionId;
+        }
+
+        @JavascriptInterface
+        public boolean appendFileChunk(
+                String sessionId,
+                String base64Chunk
+        ) {
+            ByteArrayOutputStream buffer = fileBuffers.get(sessionId);
+            if (buffer == null || base64Chunk == null) return false;
+
+            try {
+                byte[] chunk = Base64.decode(
+                        base64Chunk,
+                        Base64.NO_WRAP
+                );
+                buffer.write(chunk);
+                return true;
+            } catch (Exception error) {
+                cancelFileDownload(sessionId);
+                return false;
+            }
+        }
+
+        @JavascriptInterface
+        public boolean finishFileDownload(String sessionId) {
+            ByteArrayOutputStream buffer =
+                    fileBuffers.remove(sessionId);
+            String filename = fileNames.remove(sessionId);
+            String mimeType = fileMimeTypes.remove(sessionId);
+
+            if (buffer == null || filename == null) return false;
+
+            try {
+                byte[] bytes = buffer.toByteArray();
+                buffer.close();
+                return saveBytesToDownloads(
+                        bytes,
+                        filename,
+                        mimeType
+                );
+            } catch (Exception error) {
+                return false;
+            }
+        }
+
+        @JavascriptInterface
+        public void cancelFileDownload(String sessionId) {
+            ByteArrayOutputStream buffer =
+                    fileBuffers.remove(sessionId);
+            fileNames.remove(sessionId);
+            fileMimeTypes.remove(sessionId);
+            if (buffer != null) {
+                try {
+                    buffer.close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        @JavascriptInterface
+        public void showToast(final String message) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void share(final String text) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, text);
+                    activity.startActivity(Intent.createChooser(intent, "Partager"));
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void copyText(final String text) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ClipboardManager clipboard =
+                            (ClipboardManager) activity.getSystemService(
+                                    Context.CLIPBOARD_SERVICE
+                            );
+                    if (clipboard != null) {
+                        clipboard.setPrimaryClip(
+                                ClipData.newPlainText("Texte", text)
+                        );
+                    }
+                    Toast.makeText(activity, "Copié", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void vibrate(long milliseconds) {
+            Vibrator vibrator =
+                    (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator == null) return;
+
+            long duration = Math.max(1L, Math.min(milliseconds, 2000L));
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(
+                        VibrationEffect.createOneShot(
+                                duration,
+                                VibrationEffect.DEFAULT_AMPLITUDE
+                        )
+                );
+            } else {
+                vibrator.vibrate(duration);
+            }
+        }
+
+        @JavascriptInterface
+        public void openUrl(final String url) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        activity.startActivity(
+                                new Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        );
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
+        }
+
+
+        private void sendBackgroundIntent(
+                String action,
+                String title,
+                String message,
+                boolean success
+        ) {
+            Intent intent = new Intent(activity, BuildForegroundService.class);
+            intent.setAction(action);
+            intent.putExtra(BuildForegroundService.EXTRA_TITLE, title);
+            intent.putExtra(BuildForegroundService.EXTRA_MESSAGE, message);
+            intent.putExtra(BuildForegroundService.EXTRA_SUCCESS, success);
+
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                activity.startForegroundService(intent);
+            } else {
+                activity.startService(intent);
+            }
+        }
+
+        @JavascriptInterface
+        public void startBackgroundTask(final String title, final String message) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (android.os.Build.VERSION.SDK_INT >= 33 &&
+                            activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                        activity.requestPermissions(
+                                new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                                REQUEST_NOTIFICATIONS
+                        );
+                    }
+                    sendBackgroundIntent(
+                            BuildForegroundService.ACTION_START,
+                            title,
+                            message,
+                            true
+                    );
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void updateBackgroundTask(final String message) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    sendBackgroundIntent(
+                            BuildForegroundService.ACTION_UPDATE,
+                            "Génération APK en cours",
+                            message,
+                            true
+                    );
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void finishBackgroundTask(final String message, final boolean success) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    sendBackgroundIntent(
+                            BuildForegroundService.ACTION_FINISH,
+                            success ? "APK prêt" : "Génération interrompue",
+                            message,
+                            success
+                    );
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public boolean supportsBackgroundTask() {
+            return true;
+        }
+
+        @JavascriptInterface
+        public String getPackageName() {
+            return activity.getPackageName();
+        }
+    }
+}
+--- generated/app/src/main/java/dev/ghostbuilderdev/raplabpro/streamboxx/a0lnczne/BuildForegroundService.java ---
+package dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.IBinder;
+import android.os.PowerManager;
+
+public class BuildForegroundService extends Service {
+    public static final String ACTION_START = "html.apk.builder.START";
+    public static final String ACTION_UPDATE = "html.apk.builder.UPDATE";
+    public static final String ACTION_FINISH = "html.apk.builder.FINISH";
+    public static final String EXTRA_TITLE = "title";
+    public static final String EXTRA_MESSAGE = "message";
+    public static final String EXTRA_SUCCESS = "success";
+
+    private static final String CHANNEL_PROGRESS = "apk_generation_progress";
+    private static final String CHANNEL_RESULT = "apk_generation_result";
+    private static final int PROGRESS_ID = 4207;
+    private static final int RESULT_ID = 4208;
+
+    private NotificationManager notificationManager;
+    private PowerManager.WakeLock wakeLock;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        createChannels();
+    }
+
+    private void createChannels() {
+        if (Build.VERSION.SDK_INT < 26 || notificationManager == null) return;
+
+        NotificationChannel progress = new NotificationChannel(
+                CHANNEL_PROGRESS,
+                "Génération APK",
+                NotificationManager.IMPORTANCE_LOW
+        );
+        progress.setDescription("Progression de la génération APK");
+        progress.setShowBadge(false);
+
+        NotificationChannel result = new NotificationChannel(
+                CHANNEL_RESULT,
+                "Résultat de la génération APK",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        result.setDescription("Fin ou échec d’une génération APK");
+
+        notificationManager.createNotificationChannel(progress);
+        notificationManager.createNotificationChannel(result);
+    }
+
+    private PendingIntent openAppIntent() {
+        Intent open = new Intent(this, MainActivity.class);
+        open.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return PendingIntent.getActivity(
+                this,
+                0,
+                open,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+    }
+
+    private Notification buildNotification(
+            String channel,
+            String title,
+            String message,
+            boolean ongoing,
+            boolean success
+    ) {
+        Notification.Builder builder = Build.VERSION.SDK_INT >= 26
+                ? new Notification.Builder(this, channel)
+                : new Notification.Builder(this);
+
+        builder.setContentTitle(title)
+                .setContentText(message)
+                .setStyle(new Notification.BigTextStyle().bigText(message))
+                .setSmallIcon(android.R.drawable.stat_sys_upload)
+                .setContentIntent(openAppIntent())
+                .setOngoing(ongoing)
+                .setOnlyAlertOnce(ongoing)
+                .setAutoCancel(!ongoing)
+                .setColor(success ? Color.parseColor("#3DDC97") : Color.parseColor("#FF6B6B"));
+
+        if (ongoing) builder.setProgress(100, 50, true);
+        return builder.build();
+    }
+
+    private void acquireWakeLock() {
+        if (wakeLock != null && wakeLock.isHeld()) return;
+        PowerManager manager =
+                (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (manager != null) {
+            wakeLock = manager.newWakeLock(
+                    PowerManager.PARTIAL_WAKE_LOCK,
+                    "HtmlApkBuilder:Generation"
+            );
+            wakeLock.acquire(60L * 60L * 1000L);
+        }
+    }
+
+    private void releaseWakeLock() {
+        if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+        wakeLock = null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = intent == null ? ACTION_START : intent.getAction();
+        String title = intent == null ? "Génération APK en cours" : intent.getStringExtra(EXTRA_TITLE);
+        String message = intent == null ? "Compilation GitHub en cours…" : intent.getStringExtra(EXTRA_MESSAGE);
+        boolean success = intent == null || intent.getBooleanExtra(EXTRA_SUCCESS, true);
+
+        if (title == null || title.trim().isEmpty()) title = "Génération APK";
+        if (message == null || message.trim().isEmpty()) message = "Traitement en cours…";
+
+        if (ACTION_FINISH.equals(action)) {
+            releaseWakeLock();
+            stopForeground(true);
+            if (notificationManager != null) {
+                notificationManager.notify(
+                        RESULT_ID,
+                        buildNotification(CHANNEL_RESULT,title,message,false,success)
+                );
+            }
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
+        acquireWakeLock();
+        startForeground(
+                PROGRESS_ID,
+                buildNotification(CHANNEL_PROGRESS,title,message,true,true)
+        );
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        releaseWakeLock();
+        super.onDestroy();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+}
+
+=== RESSOURCES XML ANDROID ===
+--- generated/app/src/main/res/values/strings.xml ---
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StreamBox X</string>
+</resources>--- generated/app/src/main/res/values/colors.xml ---
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_color">#FF7A1A</color>
+    <color name="window_background">#11141B</color>
+</resources>--- generated/app/src/main/res/values/styles.xml ---
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:colorAccent">@color/brand_color</item>
+        <item name="android:statusBarColor">@color/brand_color</item>
+        <item name="android:navigationBarColor">@color/window_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>--- generated/app/src/main/res/values-v31/styles.xml ---
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:statusBarColor">@color/brand_color</item>
+        <item name="android:navigationBarColor">@color/window_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
+=== DIAGNOSTIC LOCAL DU PROJET WEB ===
 ============================================================
  DIAGNOSTIC LOCAL DU PROJET WEB
 ============================================================
-Date : 2026-07-20T19:01:59.946Z
+Date : 2026-07-20T19:21:20.266Z
 Application : StreamBox X
 Package : dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne
 Fichiers intégrés : 10
-Références HTML analysées : 5
-Ressources externes : 1
+Références HTML analysées : 9
+Ressources externes : 5
 Erreurs détectées : 0
 Avertissements : 0
 
@@ -140,13 +1543,422 @@ Avertissements : 0
 
 Ce rapport local est complété par latest-diagnostic.txt après la compilation GitHub.
 ============================================================
-=== FICHIERS APK / RAPPORTS PRODUITS ===
-apk-output/StreamBox-X-dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne-v206737319-debug.apk | 63806 octets
-apk-output/apk-verification.txt | 1826 octets
+=== INVENTAIRE DES FICHIERS WEB ===
+generated/app/src/main/assets/www/README.txt | 1164 octets
+generated/app/src/main/assets/www/android-bridge.js | 1581 octets
+generated/app/src/main/assets/www/android-config.json | 571 octets
+generated/app/src/main/assets/www/app.js | 32595 octets
+generated/app/src/main/assets/www/icons/icon-192.png | 1639 octets
+generated/app/src/main/assets/www/icons/icon-512.png | 4589 octets
+generated/app/src/main/assets/www/index.html | 16426 octets
+generated/app/src/main/assets/www/manifest.webmanifest | 488 octets
+generated/app/src/main/assets/www/service-worker.js | 730 octets
+generated/app/src/main/assets/www/styles.css | 22970 octets
 
-=== ÉTAT DE LA RELEASE ===
-Un fichier APK a été produit localement par le workflow.
+=== EXTRAIT DU FICHIER index.html ===
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050816">
+  <title>StreamBox Infinity</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="appFx" aria-hidden="true">
+    <div class="orb orbA"></div>
+    <div class="orb orbB"></div>
+    <div class="orb orbC"></div>
+    <div class="gridGlow"></div>
+    <div class="noise"></div>
+  </div>
+
+  <div id="networkBanner" class="networkBanner hidden">Connexion réseau instable. Certaines fonctions peuvent être limitées.</div>
+
+  <div id="splash" class="splash">
+    <div class="splashMark">
+      <span></span><span></span><span></span>
+    </div>
+    <h1>STREAMBOX <b>INFINITY</b></h1>
+    <p>Le lecteur premium pour vos univers vidéo personnels</p>
+  </div>
+
+  <section id="login" class="loginScreen hidden">
+    <div class="authShell">
+      <div class="authVisual glassPanel">
+        <div class="authVisualTop">
+          <div class="brand bigBrand">
+            <div class="logoBadge"><span>S</span></div>
+            <div>
+              <strong>STREAMBOX INFINITY</strong>
+              <small>Xtream • HLS • DASH • Android</small>
+            </div>
+          </div>
+          <span class="statusPill">PREMIUM UI</span>
+        </div>
+
+        <div class="visualHero">
+          <div class="visualHeadline">
+            <h1>Une interface au niveau <span>flagship</span>.</h1>
+            <p>Connexion Xtream Codes, lecture haute qualité, profils locaux, EPG, favoris et une esthétique pensée comme une application grand public haut de gamme.</p>
+          </div>
+          <div class="featureMosaic">
+            <article class="featureTile highlight">
+              <small>EXPÉRIENCE</small>
+              <h3>Cinématique</h3>
+              <p>Animations fluides, glassmorphism premium et surfaces lumineuses.</p>
+            </article>
+            <article class="featureTile">
+              <small>LECTURE</small>
+              <h3>Live / VOD / Séries</h3>
+              <p>Prise en charge HLS, DASH et fichiers vidéo compatibles.</p>
+            </article>
+            <article class="featureTile">
+              <small>CONFORT</small>
+              <h3>Profils & reprise</h3>
+              <p>Continuez vos contenus là où vous vous étiez arrêté.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="visualFooter">
+          <div class="miniPosterStack">
+            <div class="miniPoster posterA"></div>
+            <div class="miniPoster posterB"></div>
+            <div class="miniPoster posterC"></div>
+          </div>
+          <div class="bulletList">
+            <div><span></span>Design premium optimisé mobile</div>
+            <div><span></span>EPG et catégories Xtream</div>
+            <div><span></span>Connexion 100% locale sur l’appareil</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="authCard glassPanel">
+        <div class="brand">
+          <div class="logoBadge"><span>S</span></div>
+          <div>
+            <strong>Connexion sécurisée</strong>
+            <small>Vos identifiants restent stockés localement</small>
+          </div>
+        </div>
+
+        <div class="authCopy">
+          <h2>Connecte ton univers vidéo</h2>
+          <p>Utilise uniquement des accès et contenus pour lesquels tu disposes des droits nécessaires.</p>
+        </div>
+
+        <div class="formGrid">
+          <label>
+            <span>Nom du profil</span>
+            <input id="profileName" placeholder="Salon, Maison, Test…">
+          </label>
+          <label>
+            <span>Serveur Xtream</span>
+            <input id="server" inputmode="url" placeholder="http://serveur:port">
+          </label>
+          <label>
+            <span>Identifiant</span>
+            <input id="username" autocomplete="username" placeholder="Votre identifiant">
+          </label>
+          <label>
+            <span>Mot de passe</span>
+            <div class="passwordField">
+              <input id="password" type="password" autocomplete="current-password" placeholder="Votre mot de passe">
+              <button id="showPassword" type="button" class="iconBtn inlineBtn" aria-label="Afficher le mot de passe">◉</button>
+            </div>
+          </label>
+        </div>
+
+        <div class="authActions">
+          <button id="connectBtn" class="primaryBtn xl">Se connecter <span>→</span></button>
+          <button id="demoBtn" class="ghostBtn">Explorer l’interface en mode démo</button>
+        </div>
+
+        <div id="loginStatus" class="loginStatus"></div>
+
+        <div id="savedProfilesWrap" class="savedProfilesWrap hidden">
+          <div class="sectionHead compact">
+            <h3>Profils enregistrés</h3>
+            <button id="clearProfilesBtn" class="tinyGhost">Effacer</button>
+          </div>
+          <div id="savedProfiles" class="savedProfiles"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" class="appShell hidden">
+    <header class="topbar glassPanel">
+      <div class="brand">
+        <div class="logoBadge small"><span>S</span></div>
+        <div>
+          <strong>STREAMBOX <em>INFINITY</em></strong>
+          <small id="profileLabel">Profil</small>
+        </div>
+      </div>
+      <div class="topbarActions">
+        <button id="searchBtn" class="iconBtn" aria-label="Rechercher">⌕</button>
+        <button id="refreshTopBtn" class="iconBtn" aria-label="Actualiser">↻</button>
+        <button id="accountBtn" class="avatarBtn" aria-label="Réglages">Y</button>
+      </div>
+    </header>
+
+    <main class="mainContent">
+      <section id="homeView" class="view active">
+        <section id="hero" class="heroPanel glassPanel">
+          <div id="heroBackdrop" class="heroBackdrop"></div>
+          <div class="heroScrim"></div>
+          <div class="heroMain">
+            <div class="heroMeta">
+              <span id="heroBadge" class="statusPill accent">À LA UNE</span>
+              <span id="heroSubMeta" class="heroSubMeta">Premium experience</span>
+            </div>
+            <h1 id="heroTitle">Bienvenue dans StreamBox Infinity</h1>
+            <p id="heroText">Ton catalogue apparaît ici avec une présentation immersive, fluide et premium.</p>
+            <div class="heroActions">
+              <button id="heroPlay" class="primaryBtn">▶ Regarder</button>
+              <button id="heroInfo" class="glassBtn">ⓘ Détails</button>
+            </div>
+          </div>
+          <aside class="heroAside">
+            <div class="metricCard">
+              <small>CATALOGUE</small>
+              <strong id="heroCatalogCount">0</strong>
+              <span>éléments synchronisés</span>
+            </div>
+            <div class="metricRow">
+              <div class="microMetric"><b id="liveCount">0</b><span>Live</span></div>
+              <div class="microMetric"><b id="movieCount">0</b><span>Films</span></div>
+              <div class="microMetric"><b id="seriesCount">0</b><span>Séries</span></div>
+            </div>
+            <div class="miniNowCard">
+              <small>Interface</small>
+              <b>Ultra premium</b>
+              <p>Conçue pour ressembler à une vraie application de streaming flagship.</p>
+            </div>
+          </aside>
+        </section>
+
+        <section id="continueSection" class="railBlock hidden">
+          <div class="sectionHead">
+            <div>
+              <h2>Continuer à regarder</h2>
+              <p>Reprends instantanément où tu t’es arrêté</p>
+            </div>
+          </div>
+          <div id="continueRail" class="rail"></div>
+        </section>
+
+        <section class="railBlock">
+          <div class="sectionHead">
+            <div>
+              <h2>Chaînes en direct</h2>
+              <p>Accès rapide aux flux live</p>
+            </div>
+            <button data-go="live" class="tinyGhost">Tout voir</button>
+          </div>
+          <div id="liveRail" class="rail liveRail"></div>
+        </section>
+
+        <section class="railBlock">
+          <div class="sectionHead">
+            <div>
+              <h2>Films populaires</h2>
+              <p>Bibliothèque VOD premium</p>
+            </div>
+            <button data-go="movies" class="tinyGhost">Tout voir</button>
+          </div>
+          <div id="movieRail" class="rail posterRail"></div>
+        </section>
+
+        <section class="railBlock">
+          <div class="sectionHead">
+            <div>
+              <h2>Séries</h2>
+              <p>Épisodes, saisons et reprise</p>
+            </div>
+            <button data-go="series" class="tinyGhost">Tout voir</button>
+          </div>
+          <div id="seriesRail" class="rail posterRail"></div>
+        </section>
+      </section>
+
+      <section id="catalogView" class="view">
+        <div class="viewTop glassPanel stickyPanel">
+          <div class="toolbarLine">
+            <button id="backCatalog" class="iconBtn">‹</button>
+            <div>
+              <h1 id="catalogTitle">Catalogue</h1>
+              <p id="catalogCount">0 contenu</p>
+            </div>
+            <button id="filterBtn" class="iconBtn" aria-label="Filtres">☷</button>
+          </div>
+          <div id="categoryChips" class="chips"></div>
+        </div>
+        <div id="catalogGrid" class="catalogGrid"></div>
+        <div id="loadMore" class="loadMore hidden">Chargement de contenus supplémentaires…</div>
+      </section>
+
+      <section id="favoritesView" class="view">
+        <div class="viewTop glassPanel simplePanel">
+          <h1>Ma liste</h1>
+          <p>Les contenus favoris réunis dans un espace premium</p>
+        </div>
+        <div id="favoritesGrid" class="catalogGrid posterMode"></div>
+      </section>
+
+      <section id="settingsView" class="view">
+        <div class="viewTop glassPanel simplePanel">
+          <h1>Réglages</h1>
+          <p>Personnalise l’expérience StreamBox Infinity</p>
+        </div>
+
+        <div class="settingsStack">
+          <article class="settingsCard glassPanel">
+            <h3>Profil actif</h3>
+            <div class="profileCardRow">
+              <div class="avatarBtn large" id="settingsAvatar">Y</div>
+              <div class="profileDetails">
+                <strong id="settingsProfile">Profil</strong>
+                <small id="settingsServer">Serveur</small>
+              </div>
+              <button id="switchProfile" class="tinyGhost">Changer</button>
+            </div>
+          </article>
+
+          <article class="settingsCard glassPanel">
+            <h3>Lecture</h3>
+            <label class="toggleRow">
+              <span><b>Lecture automatique</b><small>Démarrer dès que le flux est prêt</small></span>
+              <input id="autoPlay" type="checkbox">
+              <i></i>
+            </label>
+            <label class="toggleRow">
+              <span><b>Reprise de lecture</b><small>Sauvegarder la position des films et épisodes</small></span>
+              <input id="resumePlay" type="checkbox">
+              <i></i>
+            </label>
+            <label class="toggleRow">
+              <span><b>Lecteur externe</b><small>Essayer VLC ou un autre lecteur si nécessaire</small></span>
+              <input id="externalPlayer" type="checkbox">
+              <i></i>
+            </label>
+            <label class="selectRow">
+              <span><b>Format Live Xtream</b><small>Choisis le conteneur le plus compatible</small></span>
+              <select id="liveFormat">
+                <option value="m3u8">HLS (.m3u8)</option>
+                <option value="ts">Transport Stream (.ts)</option>
+              </select>
+            </label>
+          </article>
+
+          <article class="settingsCard glassPanel">
+            <h3>Profils enregistrés</h3>
+            <div id="profilesManager" class="savedProfiles manager"></div>
+          </article>
+
+          <article class="settingsCard glassPanel">
+            <h3>Données</h3>
+            <div class="buttonStack">
+              <button id="refreshBtn" class="settingBtn">↻ Actualiser les catalogues</button>
+              <button id="clearCacheBtn" class="settingBtn">⌫ Effacer l’historique</button>
+              <button id="clearResumeBtn" class="settingBtn">◌ Réinitialiser les reprises</button>
+              <button id="logoutBtn" class="settingBtn danger">⏻ Déconnecter ce profil</button>
+            </div>
+          </article>
+
+          <p class="legalCopy">StreamBox Infinity ne fournit aucun abonnement ni contenu. L’application lit uniquement les sources ajoutées par l’utilisateur, dans le respect des droits applicables.</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottomDock glassPanel">
+      <button class="dockItem active" data-view="home"><span>⌂</span><b>Accueil</b></button>
+      <button class="dockItem" data-view="live"><span>◉</span><b>Direct</b></button>
+      <button class="dockItem" data-view="movies"><span>▶</span><b>Films</b></button>
+      <button class="dockItem" data-view="series"><span>▤</span><b>Séries</b></button>
+      <button class="dockItem" data-view="favorites"><span>♡</span><b>Ma liste</b></button>
+    </nav>
+  </div>
+
+  <div id="searchOverlay" class="overlay hidden">
+    <div class="overlayPanel glassPanel">
+      <div class="searchBar">
+        <button id="closeSearch" class="iconBtn">‹</button>
+        <input id="searchInput" placeholder="Rechercher une chaîne, un film, une série…">
+        <button id="clearSearch" class="iconBtn">×</button>
+      </div>
+      <div id="searchResults" class="catalogGrid posterMode searchGrid"></div>
+    </div>
+  </div>
+
+  <div id="playerModal" class="overlay hidden darkOverlay">
+    <div class="playerShell glassPanel">
+      <div class="playerHeader">
+        <button id="closePlayer" class="iconBtn">‹</button>
+        <div class="playerHeaderText">
+          <strong id="playingTitle">Lecture</strong>
+          <small id="playingMeta"></small>
+        </div>
+        <button id="favPlayer" class="iconBtn">♡</button>
+      </div>
+      <div class="videoFrame">
+        <video id="video" controls playsinline></video>
+        <div id="playerLoader" class="spinner hidden"></div>
+      </div>
+      <div class="playerActions">
+        <button id="rewindBtn" class="glassBtn">« 10s</button>
+        <button id="playPauseBtn" class="primaryBtn compact">Pause</button>
+        <button id="forwardBtn" class="glassBtn">10s »</button>
+        <button id="pipBtn" class="glassBtn">PiP</button>
+        <button id="externalOpenBtn" class="glassBtn">Lecteur externe</button>
+      </div>
+      <div id="resumeBadge" class="resumeBadge hidden">Reprise appliquée</div>
+      <div id="epgPanel" class="epgPanel glassInset hidden">
+        <div class="sectionHead compact">
+          <h3>Programme</h3>
+        </div>
+        <div id="epgList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="detailsModal" class="overlay hidden darkOverlay">
+    <div class="detailsShell">
+      <button id="closeDetails" class="closeFloat">×</button>
+      <div id="detailsBackdrop" class="detailsBackdrop"></div>
+      <div class="detailsFade"></div>
+      <div class="detailsContent glassPanel">
+        <span id="detailsType" class="statusPill accent">CONTENU</span>
+        <h1 id="detailsTitle"></h1>
+        <div id="detailsMeta" class="detailsMeta"></div>
+        <p id="detailsPlot"></p>
+        <div class="detailActions">
+          <button id="detailsPlay" class="primaryBtn">▶ Regarder</button>
+          <button id="detailsFav" class="glassBtn">♡ Ma liste</button>
+        </div>
+        <div id="episodesArea" class="episodesArea"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
 
 ============================================================
- FIN DU RAPPORT FINAL
+ FIN DU RAPPORT
+ Transmets ce fichier texte dans la conversation pour correction.
 ============================================================
