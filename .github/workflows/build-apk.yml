@@ -180,7 +180,7 @@ jobs:
             echo "============================================================"
             echo "Application : StreamBox X"
             echo "Package     : dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne"
-            echo "Version     : 1 (206737319)"
+            echo "Version     : 1 (206738480)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -350,13 +350,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/StreamBox-X-dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne-v206737319-debug.apk"
+          APK_FILE="apk-output/StreamBox-X-dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne-v206738480-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
             echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne"
-            echo "VERSION_CODE_ATTENDU=206737319"
+            echo "VERSION_CODE_ATTENDU=206738480"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -366,7 +366,7 @@ jobs:
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
           [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne" ] || exit 1
-          [ "$ACTUAL_VERSION" = "206737319" ] || exit 1
+          [ "$ACTUAL_VERSION" = "206738480" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
