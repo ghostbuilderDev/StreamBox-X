@@ -178,9 +178,9 @@ jobs:
             echo "============================================================"
             echo " RAPPORT DIAGNOSTIC HTML VERS APK"
             echo "============================================================"
-            echo "Application : StreamBox X"
-            echo "Package     : dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne"
-            echo "Version     : 10 (206753496)"
+            echo "Application : Xtream-X"
+            echo "Package     : com.yoann.monapplication"
+            echo "Version     : 1.0.0 (206756909)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -350,13 +350,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/StreamBox-X-dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne-v206753496-debug.apk"
+          APK_FILE="apk-output/Xtream-X-com.yoann.monapplication-v206756909-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
-            echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne"
-            echo "VERSION_CODE_ATTENDU=206753496"
+            echo "PACKAGE_ATTENDU=com.yoann.monapplication"
+            echo "VERSION_CODE_ATTENDU=206756909"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -365,14 +365,14 @@ jobs:
           ACTUAL_PACKAGE=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $2; exit}')
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
-          [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.raplabpro.streamboxx.a0lnczne" ] || exit 1
-          [ "$ACTUAL_VERSION" = "206753496" ] || exit 1
+          [ "$ACTUAL_PACKAGE" = "com.yoann.monapplication" ] || exit 1
+          [ "$ACTUAL_VERSION" = "206756909" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: StreamBox-X-apk
+          name: Xtream-X-apk
           path: |
             apk-output/*.apk
             apk-output/apk-verification.txt
