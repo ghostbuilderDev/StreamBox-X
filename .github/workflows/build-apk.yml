@@ -178,9 +178,9 @@ jobs:
             echo "============================================================"
             echo " RAPPORT DIAGNOSTIC HTML VERS APK"
             echo "============================================================"
-            echo "Application : Iptv player"
-            echo "Package     : dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa"
-            echo "Version     : 10 (207868487)"
+            echo "Application : iPTV player"
+            echo "Package     : dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8"
+            echo "Version     : 1.0.3 (207870509)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -350,13 +350,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/Iptv-player-dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa-v207868487-debug.apk"
+          APK_FILE="apk-output/iPTV-player-dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8-v207870509-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
-            echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa"
-            echo "VERSION_CODE_ATTENDU=207868487"
+            echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8"
+            echo "VERSION_CODE_ATTENDU=207870509"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -365,14 +365,14 @@ jobs:
           ACTUAL_PACKAGE=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $2; exit}')
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
-          [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa" ] || exit 1
-          [ "$ACTUAL_VERSION" = "207868487" ] || exit 1
+          [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207870509" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Iptv-player-apk
+          name: iPTV-player-apk
           path: |
             apk-output/*.apk
             apk-output/apk-verification.txt
