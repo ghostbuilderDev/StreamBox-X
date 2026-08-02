@@ -1,4 +1,4 @@
-name: Build APK V16 — Iptv player
+name: Build uploaded HTML project
 
 on:
   workflow_dispatch:
@@ -10,513 +10,449 @@ permissions:
   contents: write
   actions: read
 
-concurrency:
-  group: htmltoapk-v16-${{ github.repository }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  APP_NAME: "Iptv player"
-  EXPECTED_PACKAGE: "dev.utilisateur.depot.iptvplayer.a0nfclpc"
-  EXPECTED_VERSION_CODE: "207868323"
-  EXPECTED_VERSION_NAME: "1.0.0"
-  APK_FILENAME: "Iptv-player-dev.utilisateur.depot.iptvplayer.a0nfclpc-v207868323-debug.apk"
-  PROJECT_ROOT: "generated"
-  BUILD_TOOLS_VERSION: "35.0.0"
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
     steps:
-      - name: Récupérer le dépôt
-        id: checkout
-        uses: actions/checkout@v5
-        continue-on-error: true
-        with:
-          fetch-depth: 0
+      - name: Récupérer les fichiers
+        uses: actions/checkout@v4
 
-      - name: Initialiser le diagnostic V16
-        id: init
-        if: always()
-        continue-on-error: true
+      - name: Extraire le projet
         shell: bash
         run: |
-          mkdir -p diagnostics apk-output
-          : > diagnostics/workflow.log
-          {
-            echo "Iptv player V16"
-            echo "run_id=${{ github.run_id }}"
-            echo "run_number=${{ github.run_number }}"
-            echo "repository=${{ github.repository }}"
-            echo "ref=${{ github.ref }}"
-            echo "sha=${{ github.sha }}"
-            echo "started_at=$(date -u +%FT%TZ)"
-          } | tee diagnostics/run-context.txt
-
-      - name: Extraire et contrôler project.zip
-        id: extract
-        if: always()
-        continue-on-error: true
-        shell: bash
-        run: |
-          exec > >(tee -a diagnostics/workflow.log) 2>&1
-          set -Eeuo pipefail
-          STAGE="extraction_project_zip"
-          trap 'CODE=$?; printf "stage=%s\nexit_code=%s\ndate=%s\n" "$STAGE" "$CODE" "$(date -u +%FT%TZ)" > diagnostics/failure-stage.txt; exit "$CODE"' ERR
-          rm -rf generated
-          mkdir -p generated
-          test -s project.zip
-          python3 - <<'PYZIP'
-          import collections, pathlib, shutil, zipfile
-          archive = pathlib.Path("project.zip")
-          destination = pathlib.Path("generated")
-          if destination.exists():
-              shutil.rmtree(destination)
-          destination.mkdir(parents=True, exist_ok=True)
-          with zipfile.ZipFile(archive) as zf:
-              files = [info for info in zf.infolist() if not info.is_dir()]
-              counts = collections.Counter(info.filename.lower() for info in files)
-              duplicates = sorted(name for name, count in counts.items() if count > 1)
-              pathlib.Path("diagnostics/project-zip-duplicates.txt").write_text(
-                  "
-".join(duplicates), encoding="utf-8"
-              )
-              for info in zf.infolist():
-                  zf.extract(info, destination)
-          print(f"Archive extraite sans interaction : {len(files)} fichier(s), {len(duplicates)} doublon(s).")
-          PYZIP
-          printf "sha256=%s\nsize=%s\n" "$(sha256sum project.zip | awk '{print $1}')" "$(stat -c %s project.zip)" > diagnostics/project-zip-info.txt
+          rm -rf generated diagnostics build.log build-exit-code.txt
+          mkdir -p generated diagnostics
+          unzip -q project.zip -d generated
 
       - name: Installer Java 17
-        id: java
-        if: always()
-        continue-on-error: true
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
       - name: Installer Gradle 8.9
-        id: gradle
-        if: always()
-        continue-on-error: true
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
-          cache-disabled: true
 
-      - name: Installer Android SDK
-        id: android
-        if: always()
-        continue-on-error: true
+      - name: Installer Android SDK 35
         uses: android-actions/setup-android@v3
 
-      - name: Installer Android 35 et les outils de compilation
-        id: sdk
-        if: always()
-        continue-on-error: true
-        shell: bash
+      - name: Installer la plateforme Android 35
         run: |
-          exec > >(tee -a diagnostics/workflow.log) 2>&1
-          set -Eeuo pipefail
-          STAGE="installation_android_sdk"
-          trap 'CODE=$?; printf "stage=%s\nexit_code=%s\ndate=%s\n" "$STAGE" "$CODE" "$(date -u +%FT%TZ)" > diagnostics/failure-stage.txt; exit "$CODE"' ERR
-          command -v sdkmanager
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager "platforms;android-35" "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools"
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Prédiagnostic de l’environnement
-        id: environment
-        if: always()
-        continue-on-error: true
+      - name: Vérifier le projet
         shell: bash
         run: |
-          {
-            echo "=== DATE ==="
-            date -u +%FT%TZ
-            echo "=== SYSTÈME ==="
-            uname -a
-            echo "=== JAVA ==="
-            java -version 2>&1 || true
-            echo "=== GRADLE ==="
-            gradle --version 2>&1 || true
-            echo "=== ANDROID ==="
-            echo "ANDROID_HOME=${ANDROID_HOME:-}"
-            echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-}"
-            command -v sdkmanager || true
-            command -v adb || true
-            sdkmanager --list_installed 2>&1 | head -n 180 || true
-            echo "=== ESPACE DISQUE ==="
-            df -h
-            echo "=== MÉMOIRE ==="
-            free -h || true
-          } > diagnostics/environment.txt 2>&1
-          cat diagnostics/environment.txt >> diagnostics/workflow.log
+          set -e
+          test -f generated/settings.gradle.kts
+          test -f generated/build.gradle.kts
+          test -f generated/app/build.gradle.kts
+          test -f generated/app/src/main/AndroidManifest.xml
+          test -f generated/app/src/main/assets/www/index.html
 
-      - name: Vérifier et normaliser le projet Android
-        id: preflight
-        if: always()
-        continue-on-error: true
+
+      - name: Normaliser et réparer la configuration Gradle
         shell: bash
         run: |
-          exec > >(tee -a diagnostics/workflow.log) 2>&1
-          set -Eeuo pipefail
-          STAGE="verification_projet_android"
-          trap 'CODE=$?; printf "stage=%s\nexit_code=%s\ndate=%s\n" "$STAGE" "$CODE" "$(date -u +%FT%TZ)" > diagnostics/failure-stage.txt; exit "$CODE"' ERR
-          cd "$PROJECT_ROOT"
-          test -f settings.gradle.kts
-          test -f build.gradle.kts
-          test -f app/build.gradle.kts
-          test -f app/src/main/AndroidManifest.xml
-          test -f app/src/main/assets/www/index.html
-          python3 - <<'PYFIX'
+          python3 - <<'PY'
           from pathlib import Path
-          p=Path('gradle.properties')
-          defaults={
-              'org.gradle.jvmargs':'-Xmx3072m -Dfile.encoding=UTF-8',
-              'org.gradle.daemon':'false',
-              'org.gradle.parallel':'false',
-              'android.useAndroidX':'true',
-              'android.enableJetifier':'true',
-          }
-          lines=[]
-          if p.exists():
-              text=p.read_text(encoding='utf-8',errors='replace').replace('\\n','\n')
-              for raw in text.splitlines():
-                  line=raw.strip()
-                  if not line or line.startswith('#'): continue
-                  if line.startswith('android.nonTransitiveRClass='): continue
-                  if line.startswith('android.useAndroidX='): continue
-                  if line.startswith('android.enableJetifier='): continue
-                  lines.append(line)
-          data={}
-          order=[]
-          for line in lines:
-              key=line.split('=',1)[0]
-              if key not in data: order.append(key)
-              data[key]=line
-          for key,value in defaults.items():
-              if key not in data: order.append(key)
-              data[key]=f'{key}={value}'
-          p.write_text('\n'.join(data[k] for k in order)+'\n',encoding='utf-8')
-          print(p.read_text(encoding='utf-8'))
-          PYFIX
-          grep -q 'com.android.application' app/build.gradle.kts
-          grep -q 'compileSdk = 35' app/build.gradle.kts
-          printf "preflight=ok\n" > "$GITHUB_WORKSPACE/diagnostics/preflight.txt"
 
-      - name: Préparer la signature Android stable
-        id: signing
-        if: always()
-        continue-on-error: true
+          path = Path("generated/gradle.properties")
+          newline = chr(10)
+          literal_newline = chr(92) + "n"
+
+          default_lines = [
+              "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8",
+              "org.gradle.daemon=false",
+              "org.gradle.parallel=false",
+          ]
+
+          if path.exists():
+              content = path.read_text(encoding="utf-8", errors="replace")
+              content = content.replace(literal_newline, newline)
+              cleaned = []
+              for line in content.splitlines():
+                  stripped = line.strip()
+                  if not stripped:
+                      continue
+                  if stripped.startswith("android.useAndroidX="):
+                      continue
+                  if stripped.startswith("android.nonTransitiveRClass="):
+                      continue
+                  cleaned.append(stripped)
+          else:
+              cleaned = []
+
+          by_key = {}
+          order = []
+          for line in cleaned + default_lines:
+              key = line.split("=", 1)[0] if "=" in line else line
+              if key not in by_key:
+                  order.append(key)
+              by_key[key] = line
+
+          normalized = newline.join(by_key[key] for key in order) + newline
+          path.write_text(normalized, encoding="utf-8")
+
+          verification = path.read_text(encoding="utf-8", errors="strict")
+          if literal_newline in verification:
+              raise SystemExit("Des séquences littérales \n subsistent dans gradle.properties")
+
+          print("=== gradle.properties normalisé ===")
+          print(verification)
+          PY
+
+      - name: Préparer et verrouiller la signature Android stable
         shell: bash
         run: |
-          exec > >(tee -a diagnostics/workflow.log) 2>&1
-          set -Eeuo pipefail
-          STAGE="signature_android"
-          trap 'CODE=$?; printf "stage=%s\nexit_code=%s\ndate=%s\n" "$STAGE" "$CODE" "$(date -u +%FT%TZ)" > diagnostics/failure-stage.txt; exit "$CODE"' ERR
-          mkdir -p .signing "$PROJECT_ROOT/.signing"
+          set -euo pipefail
+          mkdir -p .signing generated/.signing
           KEYSTORE=".signing/html-apk-stable.p12"
           FINGERPRINT_FILE=".signing/html-apk-stable.sha256"
-          CREATED=0
-          if [ ! -s "$KEYSTORE" ]; then
-            keytool -genkeypair \
-              -keystore "$KEYSTORE" \
-              -storetype PKCS12 \
-              -storepass "HTML_APK_BUILDER_STABLE_2026" \
-              -keypass "HTML_APK_BUILDER_STABLE_2026" \
-              -alias "html-apk-stable" \
-              -keyalg RSA \
-              -keysize 2048 \
-              -validity 10000 \
-              -dname "CN=HTML APK Builder, OU=Local Apps, O=GhostBuilder, L=Paris, ST=Ile-de-France, C=FR"
-            CREATED=1
+
+          if [ ! -f "$KEYSTORE" ]; then
+            keytool -genkeypair               -keystore "$KEYSTORE"               -storetype PKCS12               -storepass "HTML_APK_BUILDER_STABLE_2026"               -keypass "HTML_APK_BUILDER_STABLE_2026"               -alias "html-apk-stable"               -keyalg RSA               -keysize 2048               -validity 10000               -dname "CN=HTML APK Builder, OU=Local Apps, O=GhostBuilder, L=Paris, ST=Ile-de-France, C=FR"
           fi
-          CURRENT_FP=$(keytool -list -v \
-            -keystore "$KEYSTORE" \
-            -storetype PKCS12 \
-            -storepass "HTML_APK_BUILDER_STABLE_2026" \
-            -alias "html-apk-stable" 2>/dev/null \
-            | awk -F'SHA256: ' '/SHA256:/{gsub(":","",$2); print tolower($2); exit}')
-          test -n "$CURRENT_FP"
-          OLD_FP=$(tr -d '[:space:]' < "$FINGERPRINT_FILE" 2>/dev/null || true)
-          if [ -n "$OLD_FP" ] && [ "$OLD_FP" != "$CURRENT_FP" ]; then
-            echo "::warning title=Signature Android::Empreinte corrigée pour correspondre à la clé réellement présente."
-          fi
-          printf '%s\n' "$CURRENT_FP" > "$FINGERPRINT_FILE"
-          if [ "$PROJECT_ROOT" != "." ]; then
-            cp "$KEYSTORE" "$PROJECT_ROOT/.signing/html-apk-stable.p12"
-            cp "$FINGERPRINT_FILE" "$PROJECT_ROOT/.signing/html-apk-stable.sha256"
-          fi
-          {
-            echo "created=$CREATED"
-            echo "sha256=$CURRENT_FP"
-            keytool -list -v -keystore "$KEYSTORE" -storetype PKCS12 -storepass "HTML_APK_BUILDER_STABLE_2026" -alias html-apk-stable 2>&1 | grep -E "Alias name:|SHA256:|Valid from:" || true
-          } > diagnostics/signing.txt
 
-      - name: Compiler l’APK et capturer tout le journal
-        id: compile
-        if: always()
-        continue-on-error: true
-        shell: bash
-        working-directory: ${{ env.PROJECT_ROOT }}
-        run: |
-          set +e
-          set -o pipefail
-          echo "compile_started_at=$(date -u +%FT%TZ)" > "$GITHUB_WORKSPACE/diagnostics/compile-status.txt"
-          command -v gradle >> "$GITHUB_WORKSPACE/diagnostics/compile-status.txt" 2>&1
-          gradle --no-daemon --console=plain :app:assembleDebug --stacktrace --warning-mode all 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
-          BUILD_EXIT=${PIPESTATUS[0]}
-          echo "$BUILD_EXIT" > "$GITHUB_WORKSPACE/build-exit-code.txt"
-          echo "exit_code=$BUILD_EXIT" >> "$GITHUB_WORKSPACE/diagnostics/compile-status.txt"
-          echo "compile_finished_at=$(date -u +%FT%TZ)" >> "$GITHUB_WORKSPACE/diagnostics/compile-status.txt"
-          echo "exit_code=$BUILD_EXIT" >> "$GITHUB_OUTPUT"
-          exit 0
+          CURRENT_FP=$(keytool -list -v             -keystore "$KEYSTORE"             -storetype PKCS12             -storepass "HTML_APK_BUILDER_STABLE_2026"             -alias "html-apk-stable" 2>/dev/null             | awk -F'SHA256: ' '/SHA256:/{gsub(":","",$2); print tolower($2); exit}')
 
-      - name: Préparer et vérifier l’APK
-        id: verify_apk
-        if: ${{ always() && steps.compile.outputs.exit_code == '0' }}
-        continue-on-error: true
-        shell: bash
-        run: |
-          set +e
-          set -o pipefail
-          mkdir -p apk-output
-          SOURCE_APK="$PROJECT_ROOT/app/build/outputs/apk/debug/app-debug.apk"
-          DEST_APK="apk-output/$APK_FILENAME"
-          READY=false
-          {
-            echo "source=$SOURCE_APK"
-            echo "destination=$DEST_APK"
-            test -s "$SOURCE_APK" || { echo "APK source absent"; exit 10; }
-            cp "$SOURCE_APK" "$DEST_APK"
-            echo "size=$(stat -c %s "$DEST_APK")"
-            echo "sha256=$(sha256sum "$DEST_APK" | awk '{print $1}')"
-            AAPT="${ANDROID_HOME:-}/build-tools/${BUILD_TOOLS_VERSION}/aapt"
-            APKSIGNER="${ANDROID_HOME:-}/build-tools/${BUILD_TOOLS_VERSION}/apksigner"
-            test -x "$AAPT"
-            test -x "$APKSIGNER"
-            "$AAPT" dump badging "$DEST_APK" | head -n 12
-            "$APKSIGNER" verify --verbose --print-certs "$DEST_APK"
-            ACTUAL_PACKAGE=$("$AAPT" dump badging "$DEST_APK" | awk -F"'" '/^package: name=/{print $2; exit}')
-            ACTUAL_VERSION=$("$AAPT" dump badging "$DEST_APK" | awk -F"'" '/^package: name=/{print $4; exit}')
-            echo "actual_package=$ACTUAL_PACKAGE"
-            echo "actual_version_code=$ACTUAL_VERSION"
-            echo "expected_package=$EXPECTED_PACKAGE"
-            echo "expected_version_code=$EXPECTED_VERSION_CODE"
-            test "$ACTUAL_PACKAGE" = "$EXPECTED_PACKAGE"
-            test "$ACTUAL_VERSION" = "$EXPECTED_VERSION_CODE"
-          } 2>&1 | tee apk-output/apk-verification.txt
-          VERIFY_EXIT=${PIPESTATUS[0]}
-          if [ "$VERIFY_EXIT" -eq 0 ]; then READY=true; fi
-          echo "ready=$READY" >> "$GITHUB_OUTPUT"
-          echo "$VERIFY_EXIT" > diagnostics/apk-verification-exit-code.txt
-          exit 0
+          [ -n "$CURRENT_FP" ] || {
+            echo "::error title=Signature Android::Empreinte de clé illisible."
+            exit 1
+          }
 
-      - name: Publier l’APK comme artefact
-        id: upload_apk
-        if: ${{ always() && steps.verify_apk.outputs.ready == 'true' }}
-        continue-on-error: true
-        uses: actions/upload-artifact@v6
-        with:
-          name: "Iptv-player-apk-v16"
-          path: |
-            apk-output/*.apk
-            apk-output/apk-verification.txt
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Publier l’APK dans la Release generated-apk
-        id: release
-        if: ${{ always() && steps.verify_apk.outputs.ready == 'true' }}
-        continue-on-error: true
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -Eeuo pipefail
-          if gh release view generated-apk >/dev/null 2>&1; then
-            gh release upload generated-apk apk-output/*.apk apk-output/apk-verification.txt --clobber
+          if [ -f "$FINGERPRINT_FILE" ]; then
+            EXPECTED_FP=$(tr -d '[:space:]' < "$FINGERPRINT_FILE")
+            [ "$CURRENT_FP" = "$EXPECTED_FP" ] || {
+              echo "::error title=Signature Android::La clé a changé depuis la compilation précédente."
+              exit 1
+            }
           else
-            gh release create generated-apk apk-output/*.apk apk-output/apk-verification.txt \
-              --title "APK généré par Iptv player V16" \
-              --notes "Compilation Android automatique avec journal de diagnostic complet."
+            printf '%s\n' "$CURRENT_FP" > "$FINGERPRINT_FILE"
           fi
 
-      - name: Générer le diagnostic complet V16
-        id: report
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$KEYSTORE" "$FINGERPRINT_FILE"
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist stable Android signing identity"
+            PUSH_OK=0
+            for ATTEMPT in 1 2 3; do
+              if git push origin "HEAD:${{ github.ref_name }}"; then
+                PUSH_OK=1
+                break
+              fi
+              sleep 2
+            done
+            [ "$PUSH_OK" -eq 1 ] || {
+              echo "::error title=Signature Android::La clé stable n’a pas pu être enregistrée."
+              exit 1
+            }
+          fi
+
+          cp "$KEYSTORE" generated/.signing/html-apk-stable.p12
+          printf '%s\n' "$CURRENT_FP" > generated/.signing/html-apk-stable.sha256
+          echo "Empreinte stable : $CURRENT_FP"
+
+      - name: Compiler l’APK
+        id: compile
+        working-directory: generated
+        shell: bash
+        run: |
+          set +e
+          set -o pipefail
+          gradle --no-daemon --console=plain :app:assembleDebug --stacktrace 2>&1 | tee ../build.log
+          BUILD_EXIT=${PIPESTATUS[0]}
+          echo "${BUILD_EXIT}" > ../build-exit-code.txt
+          exit "${BUILD_EXIT}"
+
+      - name: Générer le rapport diagnostic complet
         if: always()
-        continue-on-error: true
         shell: bash
         run: |
           mkdir -p diagnostics
           {
             echo "============================================================"
-            echo " DIAGNOSTIC COMPLET HTMLTOAPK V16"
+            echo " RAPPORT DIAGNOSTIC HTML VERS APK"
             echo "============================================================"
-            echo "Date UTC : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-            echo "Application : $APP_NAME"
-            echo "Package attendu : $EXPECTED_PACKAGE"
-            echo "Version attendue : $EXPECTED_VERSION_NAME ($EXPECTED_VERSION_CODE)"
+            echo "Application : Iptv player"
+            echo "Package     : dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa"
+            echo "Version     : 10 (207868487)"
+            echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            echo "Dépôt       : ${{ github.repository }}"
+            echo "Branche     : ${{ github.ref_name }}"
+            echo "Run         : #${{ github.run_number }}"
+            echo "URL du run  : https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "État du job : ${{ job.status }}"
+            echo
+            echo "=== SIGNATURE ANDROID ==="
+            if [ -f .signing/html-apk-stable.p12 ]; then
+              keytool -list -keystore .signing/html-apk-stable.p12 -storetype PKCS12 -storepass "HTML_APK_BUILDER_STABLE_2026" -alias html-apk-stable -v 2>&1 | grep -E "Alias name:|SHA256:|Valid from:" || true
+            else
+              echo "Clé stable absente."
+            fi
+            echo
+            echo "=== ANALYSE AUTOMATIQUE DE LA CAUSE PROBABLE ==="
+            FOUND=0
+            if [ -f build.log ]; then
+              if grep -Eqi "Could not find or load main class android.useAndroidX=true|ClassNotFoundException: android.useAndroidX=true" build.log; then
+                echo "- GRADLE.PROPERTIES MAL FORMÉ : les retours à la ligne ont été enregistrés sous forme de texte \n."
+                echo "- CORRECTION : normaliser gradle.properties et retirer les propriétés AndroidX inutiles."
+                FOUND=1
+              fi
+              if grep -qi "Android resource linking failed" build.log; then
+                echo "- ERREUR RESSOURCES ANDROID : XML, thème, icône ou ressource invalide."
+                FOUND=1
+              fi
+              if grep -qi "Manifest merger failed" build.log; then
+                echo "- ERREUR MANIFESTE : conflit ou attribut AndroidManifest.xml invalide."
+                FOUND=1
+              fi
+              if grep -qi "error: cannot find symbol" build.log; then
+                echo "- ERREUR JAVA : classe, méthode, variable ou import introuvable."
+                FOUND=1
+              fi
+              if grep -Eqi "package .+ does not exist" build.log; then
+                echo "- DÉPENDANCE MANQUANTE : un package Java/Kotlin requis n’existe pas."
+                FOUND=1
+              fi
+              if grep -Eqi "Could not resolve|Could not find .+:" build.log; then
+                echo "- DÉPENDANCE GRADLE : bibliothèque introuvable ou problème de dépôt réseau."
+                FOUND=1
+              fi
+              if grep -qi "Duplicate resources" build.log; then
+                echo "- RESSOURCES EN DOUBLE : deux fichiers Android portent le même nom logique."
+                FOUND=1
+              fi
+              if grep -Eqi "Unsupported class file major version|invalid source release" build.log; then
+                echo "- INCOMPATIBILITÉ JAVA/GRADLE : les versions des outils ne correspondent pas."
+                FOUND=1
+              fi
+              if grep -Eqi "Minimum supported Gradle version|Maximum supported Gradle JVM" build.log; then
+                echo "- INCOMPATIBILITÉ GRADLE/PLUGIN ANDROID."
+                FOUND=1
+              fi
+              if grep -qi "OutOfMemoryError" build.log; then
+                echo "- MÉMOIRE INSUFFISANTE pendant la compilation."
+                FOUND=1
+              fi
+              if grep -qi "Execution failed for task" build.log; then
+                echo "- Une tâche Gradle a échoué. Voir ERREURS EXTRAITES et JOURNAL GRADLE."
+                FOUND=1
+              fi
+            fi
+            if [ "${FOUND}" -eq 0 ]; then
+              echo "- Cause non classée automatiquement. Le journal complet est inclus plus bas."
+            fi
+            echo
+            echo "=== CODE DE SORTIE DE LA COMPILATION ==="
+            cat build-exit-code.txt 2>/dev/null || echo "Non disponible : l’échec a eu lieu avant Gradle."
+            echo
+            echo "=== ERREURS EXTRAITES DU JOURNAL ==="
+            if [ -f build.log ]; then
+              grep -nEi "error:|FAILURE:|What went wrong|A problem occurred|Execution failed|Could not|Exception|Caused by:|failed" build.log | tail -n 300 || true
+            else
+              echo "Aucun build.log : l’échec a eu lieu avant l’étape de compilation."
+            fi
+            echo
+            echo "=== 500 DERNIÈRES LIGNES DU JOURNAL GRADLE ==="
+            tail -n 500 build.log 2>/dev/null || echo "Journal Gradle indisponible."
+            echo
+            echo "=== VERSIONS DE L’ENVIRONNEMENT ==="
+            java -version 2>&1 || true
+            gradle --version 2>&1 || true
+            echo "ANDROID_HOME=${ANDROID_HOME:-non défini}"
+            echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-non défini}"
+            sdkmanager --list_installed 2>&1 | head -n 150 || true
+            echo
+            echo "=== INFORMATIONS SUR project.zip ==="
+            ls -lh project.zip 2>/dev/null || true
+            sha256sum project.zip 2>/dev/null || true
+            unzip -t project.zip 2>&1 | tail -n 40 || true
+            echo
+            echo "=== ARBORESCENCE DU PROJET GÉNÉRÉ ==="
+            find generated -maxdepth 10 -type f -printf '%p | %s octets\n' | sort | head -n 3000 || true
+            echo
+            echo "=== settings.gradle.kts ==="
+            sed -n '1,500p' generated/settings.gradle.kts 2>/dev/null || true
+            echo
+            echo "=== build.gradle.kts RACINE ==="
+            sed -n '1,500p' generated/build.gradle.kts 2>/dev/null || true
+            echo
+            echo "=== app/build.gradle.kts ==="
+            sed -n '1,700p' generated/app/build.gradle.kts 2>/dev/null || true
+            echo
+            echo "=== gradle.properties ==="
+            sed -n '1,300p' generated/gradle.properties 2>/dev/null || true
+            echo
+            echo "=== AndroidManifest.xml ==="
+            sed -n '1,700p' generated/app/src/main/AndroidManifest.xml 2>/dev/null || true
+            echo
+            echo "=== FICHIERS JAVA ==="
+            while IFS= read -r file; do
+              echo "--- $file ---"
+              sed -n '1,1400p' "$file"
+            done < <(find generated/app/src/main -name '*.java' -type f -print 2>/dev/null)
+            echo
+            echo "=== RESSOURCES XML ANDROID ==="
+            while IFS= read -r file; do
+              echo "--- $file ---"
+              sed -n '1,700p' "$file"
+            done < <(find generated/app/src/main/res -name '*.xml' -type f -print 2>/dev/null)
+            echo
+            echo "=== DIAGNOSTIC LOCAL DU PROJET WEB ==="
+            cat generated/LOCAL_WEB_DIAGNOSTIC.txt 2>/dev/null || echo "Diagnostic local absent."
+            echo
+            echo "=== INVENTAIRE DES FICHIERS WEB ==="
+            find generated/app/src/main/assets/www -type f -printf '%p | %s octets\n' | sort | head -n 3000 || true
+            echo
+            echo "=== EXTRAIT DU FICHIER index.html ==="
+            sed -n '1,450p' generated/app/src/main/assets/www/index.html 2>/dev/null || true
+            echo
+            echo "============================================================"
+            echo " FIN DU RAPPORT"
+            echo " Transmets ce fichier texte dans la conversation pour correction."
+            echo "============================================================"
+          } > diagnostics/latest-diagnostic.txt 2>&1
+
+      - name: Publier le diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostic-apk-run-${{ github.run_number }}
+          path: |
+            diagnostics/latest-diagnostic.txt
+            build.log
+            build-exit-code.txt
+            generated/LOCAL_WEB_DIAGNOSTIC.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Enregistrer le diagnostic texte dans le dépôt
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add diagnostics/latest-diagnostic.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Diagnostic compilation APK #${{ github.run_number }}"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
+
+      - name: Préparer et vérifier l’APK
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p apk-output
+          APK_FILE="apk-output/Iptv-player-dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa-v207868487-debug.apk"
+          cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
+
+          {
+            echo "APK=$APK_FILE"
+            echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa"
+            echo "VERSION_CODE_ATTENDU=207868487"
+            echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
+            "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
+          } | tee apk-output/apk-verification.txt
+
+          ACTUAL_PACKAGE=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $2; exit}')
+          ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
+
+          [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.htmltoapk.htmltoapk.a1f9ifsa" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207868487" ] || exit 1
+
+      - name: Publier l’APK comme artefact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Iptv-player-apk
+          path: |
+            apk-output/*.apk
+            apk-output/apk-verification.txt
+
+      - name: Publier l’APK dans les Releases
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view generated-apk >/dev/null 2>&1; then
+            gh release upload generated-apk apk-output/*.apk apk-output/apk-verification.txt --clobber
+          else
+            gh release create generated-apk apk-output/*.apk apk-output/apk-verification.txt --title "APK généré" --notes "APK debug généré automatiquement par HTML vers APK Builder."
+          fi
+
+      - name: Finaliser le rapport d’anomalie
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p diagnostics
+          {
+            echo "============================================================"
+            echo " RAPPORT FINAL D’ANOMALIE HTML VERS APK"
+            echo "============================================================"
             echo "Dépôt : $GITHUB_REPOSITORY"
             echo "Branche : $GITHUB_REF_NAME"
-            echo "Commit : $GITHUB_SHA"
             echo "Run : #$GITHUB_RUN_NUMBER"
             echo "URL : https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-            echo
-            echo "=== RÉSULTAT DES ÉTAPES ==="
-            echo "checkout=${{ steps.checkout.outcome }}"
-            echo "initialisation=${{ steps.init.outcome }}"
-            echo "extraction=${{ steps.extract.outcome }}"
-            echo "java=${{ steps.java.outcome }}"
-            echo "gradle=${{ steps.gradle.outcome }}"
-            echo "android_sdk_action=${{ steps.android.outcome }}"
-            echo "android_packages=${{ steps.sdk.outcome }}"
-            echo "environment=${{ steps.environment.outcome }}"
-            echo "preflight=${{ steps.preflight.outcome }}"
-            echo "signature=${{ steps.signing.outcome }}"
-            echo "compilation_step=${{ steps.compile.outcome }}"
-            echo "gradle_exit_code=${{ steps.compile.outputs.exit_code }}"
-            echo "verification_step=${{ steps.verify_apk.outcome }}"
-            echo "apk_ready=${{ steps.verify_apk.outputs.ready }}"
-            echo "upload_apk=${{ steps.upload_apk.outcome }}"
-            echo "release=${{ steps.release.outcome }}"
-            echo
-            echo "=== ÉTAPE D’ÉCHEC CAPTURÉE ==="
-            cat diagnostics/failure-stage.txt 2>/dev/null || echo "Aucune étape shell n’a enregistré d’échec avant Gradle."
+            echo "Date UTC : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo
             echo "=== CODE DE SORTIE GRADLE ==="
             cat build-exit-code.txt 2>/dev/null || echo "indisponible"
             echo
-            echo "=== ANALYSE AUTOMATIQUE ==="
-            FOUND=0
-            if [ "${{ steps.checkout.outcome }}" = "failure" ]; then echo "- Échec de récupération du dépôt."; FOUND=1; fi
-            if [ "${{ steps.extract.outcome }}" = "failure" ]; then echo "- project.zip est absent, corrompu ou mal structuré."; FOUND=1; fi
-            if [ "${{ steps.java.outcome }}" = "failure" ]; then echo "- Installation de Java 17 en échec."; FOUND=1; fi
-            if [ "${{ steps.gradle.outcome }}" = "failure" ]; then echo "- Installation de Gradle 8.9 en échec."; FOUND=1; fi
-            if [ "${{ steps.sdk.outcome }}" = "failure" ]; then echo "- Installation Android SDK 35 en échec."; FOUND=1; fi
-            if [ "${{ steps.preflight.outcome }}" = "failure" ]; then echo "- Structure ou configuration du projet Android invalide."; FOUND=1; fi
-            if [ -f build.log ]; then
-              grep -Eqi "Android resource linking failed" build.log && { echo "- Ressource Android/XML invalide."; FOUND=1; }
-              grep -Eqi "Manifest merger failed" build.log && { echo "- Conflit dans AndroidManifest.xml."; FOUND=1; }
-              grep -Eqi "error: cannot find symbol|package .+ does not exist" build.log && { echo "- Erreur Java : symbole ou package manquant."; FOUND=1; }
-              grep -Eqi "Could not resolve|Could not find .+:" build.log && { echo "- Dépendance Gradle introuvable ou réseau indisponible."; FOUND=1; }
-              grep -Eqi "Unsupported class file major version|invalid source release|Minimum supported Gradle version|Maximum supported Gradle JVM" build.log && { echo "- Incompatibilité Java, Gradle ou plugin Android."; FOUND=1; }
-              grep -Eqi "OutOfMemoryError" build.log && { echo "- Mémoire insuffisante pendant la compilation."; FOUND=1; }
-              grep -Eqi "Execution failed for task|FAILURE: Build failed" build.log && { echo "- Une tâche Gradle a échoué ; consulter les erreurs extraites."; FOUND=1; }
-            fi
-            [ "$FOUND" -eq 1 ] || echo "- Aucun motif connu détecté ; consulter le journal complet."
-            echo
-            echo "=== INFORMATIONS SUR project.zip ==="
-            cat diagnostics/project-zip-info.txt 2>/dev/null || true
-            cat diagnostics/project-zip-test.txt 2>/dev/null || true
-            echo "=== ERREURS EXTRAITES DU JOURNAL GRADLE ==="
-            if [ -f build.log ]; then
-              grep -nEi "error:|FAILURE:|What went wrong|A problem occurred|Execution failed|Could not|Exception|Caused by:|failed" build.log | tail -n 400 || true
-            else
-              echo "build.log absent : l’échec est antérieur à Gradle ou Gradle n’a pas pu démarrer."
-            fi
-            echo
-            echo "=== 800 DERNIÈRES LIGNES DU JOURNAL GRADLE ==="
-            tail -n 800 build.log 2>/dev/null || echo "Journal Gradle indisponible."
+            echo "=== JOURNAL GRADLE ==="
+            cat build.log 2>/dev/null || echo "build.log indisponible"
             echo
             echo "=== VÉRIFICATION APK ==="
-            cat apk-output/apk-verification.txt 2>/dev/null || echo "Vérification APK indisponible."
+            cat apk-output/apk-verification.txt 2>/dev/null || echo "apk-verification.txt indisponible"
             echo
-            echo "=== SIGNATURE ANDROID ==="
-            cat diagnostics/signing.txt 2>/dev/null || echo "Diagnostic de signature absent."
+            echo "=== DIAGNOSTIC LOCAL HTML ==="
+            cat generated/LOCAL_WEB_DIAGNOSTIC.txt 2>/dev/null || echo "Diagnostic local indisponible"
             echo
-            echo "=== ENVIRONNEMENT ==="
-            cat diagnostics/environment.txt 2>/dev/null || true
-            echo
-            echo "=== JOURNAL DES ÉTAPES SHELL ==="
-            cat diagnostics/workflow.log 2>/dev/null || true
-            echo
-            echo "=== STRUCTURE DU PROJET ==="
-            find "$PROJECT_ROOT" -maxdepth 10 -type f -printf '%p | %s octets\n' 2>/dev/null | sort | head -n 3500 || true
-            echo
-            echo "=== settings.gradle.kts ==="
-            sed -n '1,500p' "$PROJECT_ROOT/settings.gradle.kts" 2>/dev/null || true
-            echo
-            echo "=== build.gradle.kts ==="
-            sed -n '1,500p' "$PROJECT_ROOT/build.gradle.kts" 2>/dev/null || true
-            echo
-            echo "=== app/build.gradle.kts ==="
-            sed -n '1,800p' "$PROJECT_ROOT/app/build.gradle.kts" 2>/dev/null || true
-            echo
-            echo "=== gradle.properties ==="
-            sed -n '1,300p' "$PROJECT_ROOT/gradle.properties" 2>/dev/null || true
-            echo
-            echo "=== AndroidManifest.xml ==="
-            sed -n '1,800p' "$PROJECT_ROOT/app/src/main/AndroidManifest.xml" 2>/dev/null || true
-            echo
-            echo "=== DIAGNOSTIC LOCAL WEB ==="
-            cat "$PROJECT_ROOT/LOCAL_WEB_DIAGNOSTIC.txt" 2>/dev/null || echo "Diagnostic local absent."
-            echo
-            echo "=== FICHIERS PRODUITS ==="
+            echo "=== FICHIERS APK / RAPPORTS PRODUITS ==="
             find apk-output -maxdepth 2 -type f -printf '%p | %s octets\n' 2>/dev/null || true
             echo
+            echo "=== ÉTAT DE LA RELEASE ==="
+            if [ -d apk-output ] && find apk-output -name '*.apk' -type f | grep -q .; then
+              echo "Un fichier APK a été produit localement par le workflow."
+            else
+              echo "Aucun APK final présent dans apk-output."
+            fi
+            echo
             echo "============================================================"
-            echo " FIN DU DIAGNOSTIC V16"
+            echo " FIN DU RAPPORT FINAL"
             echo "============================================================"
-          } > diagnostics/diagnostic-complet-v16.txt 2>&1
-          cp diagnostics/diagnostic-complet-v16.txt diagnostics/latest-diagnostic.txt
-          {
-            echo "compile_exit=${{ steps.compile.outputs.exit_code }}"
-            echo "apk_ready=${{ steps.verify_apk.outputs.ready }}"
-            echo "diagnostic=diagnostics/diagnostic-complet-v16.txt"
-            echo "apk=apk-output/$APK_FILENAME"
-          } > diagnostics/result.properties
+          } > diagnostics/latest-diagnostic.txt 2>&1
 
-      - name: Publier tous les diagnostics V16
-        id: upload_diagnostics
+      - name: Publier le rapport final d’anomalie
         if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
-          name: diagnostic-complet-apk-run-${{ github.run_number }}
+          name: diagnostic-final-apk-run-${{ github.run_number }}
           path: |
-            diagnostics/**
+            diagnostics/latest-diagnostic.txt
             build.log
             build-exit-code.txt
             apk-output/apk-verification.txt
+            generated/LOCAL_WEB_DIAGNOSTIC.txt
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Sauvegarder la signature et le diagnostic dans le dépôt
-        id: persist
+      - name: Enregistrer le rapport final dans le dépôt
         if: always()
         continue-on-error: true
         shell: bash
         run: |
-          set +e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .signing/html-apk-stable.p12 .signing/html-apk-stable.sha256 diagnostics/latest-diagnostic.txt diagnostics/diagnostic-complet-v16.txt 2>/dev/null
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Iptv player V16 diagnostic #${{ github.run_number }} [skip ci]" || exit 0
-          for ATTEMPT in 1 2 3; do
-            git pull --rebase origin "$GITHUB_REF_NAME" || true
-            git push origin "HEAD:$GITHUB_REF_NAME" && exit 0
-            sleep $((ATTEMPT * 2))
-          done
-          echo "::warning title=Sauvegarde du diagnostic::Le diagnostic reste disponible dans les artefacts, mais son commit a échoué."
-          exit 0
-
-      - name: Valider le résultat final
-        if: always()
-        shell: bash
-        run: |
-          COMPILE_EXIT="${{ steps.compile.outputs.exit_code }}"
-          APK_READY="${{ steps.verify_apk.outputs.ready }}"
-          echo "Compilation Gradle : $COMPILE_EXIT"
-          echo "APK validé : $APK_READY"
-          if [ "$COMPILE_EXIT" != "0" ]; then
-            echo "::error title=Compilation APK::Gradle a échoué. Télécharge l’artefact diagnostic-complet-apk-run-${{ github.run_number }}."
-            exit 1
+          git add diagnostics/latest-diagnostic.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Final APK diagnostic #${{ github.run_number }}"
+            git push origin "HEAD:${{ github.ref_name }}" || true
           fi
-          if [ "$APK_READY" != "true" ]; then
-            echo "::error title=Vérification APK::La compilation a terminé mais l’APK n’a pas été validé."
-            exit 1
-          fi
-          echo "APK généré et vérifié avec succès : $APK_FILENAME"
