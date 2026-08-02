@@ -958,6 +958,18 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void saveAccountJson(String json) {
+            activity.getSharedPreferences("secure_profile", Context.MODE_PRIVATE)
+                    .edit().putString("account_json", json == null ? "" : json).commit();
+        }
+
+        @JavascriptInterface
+        public String loadAccountJson() {
+            return activity.getSharedPreferences("secure_profile", Context.MODE_PRIVATE)
+                    .getString("account_json", "");
+        }
+
+        @JavascriptInterface
         public String getPackageName() {
             return activity.getPackageName();
         }

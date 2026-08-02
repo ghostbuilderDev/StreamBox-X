@@ -128,7 +128,7 @@ public class NativePlayerActivity extends android.app.Activity {
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(16, 16, 16, 16);
+        top.setPadding(dp(8), dp(8), dp(8), dp(8));
         top.setBackgroundColor(0x66000000);
 
         Button back = new Button(this);
@@ -141,21 +141,25 @@ public class NativePlayerActivity extends android.app.Activity {
         text.setTextSize(17);
         text.setPadding(12, 0, 12, 0);
 
-        top.addView(back, new LinearLayout.LayoutParams(56, 56));
-        top.addView(text, new LinearLayout.LayoutParams(0, 56, 1));
+        top.addView(back, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        top.addView(text, new LinearLayout.LayoutParams(0, dp(48), 1));
 
         castButton = new MediaRouteButton(this);
-        top.addView(castButton, new LinearLayout.LayoutParams(56, 56));
+        top.addView(castButton, new LinearLayout.LayoutParams(dp(48), dp(48)));
 
         Button castText = new Button(this);
         castText.setText("Caster");
+        castText.setTextColor(0xFFFFFFFF);
+        castText.setBackgroundColor(0xCCFF6A00);
         castText.setOnClickListener(v -> requestCastPermissionsAndOpen());
-        top.addView(castText, new LinearLayout.LayoutParams(110, 56));
+        top.addView(castText, new LinearLayout.LayoutParams(dp(96), dp(48)));
 
         Button diag = new Button(this);
         diag.setText("Diag");
+        diag.setTextColor(0xFFFFFFFF);
+        diag.setBackgroundColor(0x66000000);
         diag.setOnClickListener(v -> saveDiagnostic(lastDiagnostic.isEmpty() ? buildDiagnostic("MANUAL", null) : lastDiagnostic));
-        top.addView(diag, new LinearLayout.LayoutParams(82, 56));
+        top.addView(diag, new LinearLayout.LayoutParams(dp(70), dp(48)));
 
         FrameLayout.LayoutParams topParams = new FrameLayout.LayoutParams(-1, -2, Gravity.TOP);
         root.addView(top, topParams);
@@ -229,9 +233,40 @@ public class NativePlayerActivity extends android.app.Activity {
                     return;
                 }
                 report("PLAYER_ERROR_" + error.getErrorCodeName(), error);
+                showPlaybackFailure(error);
             }
         });
         loadCurrentMedia();
+    }
+
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private void showPlaybackFailure(PlaybackException error) {
+        runOnUiThread(() -> new android.app.AlertDialog.Builder(this)
+                .setTitle("Lecture impossible")
+                .setMessage("Le serveur a refusé ce format ou le codec n'est pas pris en charge. Code : " + error.getErrorCodeName())
+                .setPositiveButton("Ouvrir avec VLC", (dialog, which) -> openExternalPlayer())
+                .setNeutralButton("Réessayer", (dialog, which) -> {
+                    playbackUrlIndex = 0;
+                    url = playbackUrls.get(0);
+                    loadCurrentMedia();
+                })
+                .setNegativeButton("Fermer", (dialog, which) -> finish())
+                .show());
+    }
+
+    private void openExternalPlayer() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(url), value(inferMime(url), "video/*"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Ouvrir le film avec…"));
+        } catch (Throwable error) {
+            Toast.makeText(this, "Aucun lecteur externe compatible n'est installé", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void loadCurrentMedia() {

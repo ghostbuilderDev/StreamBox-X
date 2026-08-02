@@ -44,3 +44,5 @@ button,input,select{font:inherit;color:inherit}button{border:0}svg{width:24px;he
 .startup-sync{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);z-index:28;margin:0 14px 12px;padding:12px 14px;border-radius:16px;display:flex;align-items:center;gap:11px;background:rgba(18,24,48,.94);border:1px solid rgba(117,216,255,.22);box-shadow:0 14px 35px rgba(0,0,0,.25);backdrop-filter:blur(18px);font-size:13px;color:#e9f8ff}
 .startup-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.2);border-top-color:#5ee8ff;border-radius:50%;animation:startupSpin .8s linear infinite;flex:0 0 auto}
 @keyframes startupSpin{to{transform:rotate(360deg)}}
+
+.account-details .account-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08)}.account-details .account-row span{color:var(--muted)}.account-details .account-row b{text-align:right;word-break:break-word}.account-details>small{display:block;margin-top:12px;color:var(--muted);line-height:1.4}.cast-button,.cast-tool{display:flex!important;visibility:visible!important;opacity:1!important}

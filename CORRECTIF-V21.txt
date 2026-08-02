@@ -1,0 +1,8 @@
+StreamBox-X V21
+
+- Correction du plantage du lecteur causé par un thème incompatible avec MediaRouteButton AndroidX.
+- Thème AppCompat complet.
+- Lecture Media3 avec plusieurs URL de secours et ouverture VLC en dernier recours.
+- Bouton Cast visible dans le lecteur et l’interface.
+- Identifiants sauvegardés dans SharedPreferences Android et localStorage.
+- Affichage de la date de validité et du temps restant.

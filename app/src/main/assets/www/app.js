@@ -1,5 +1,5 @@
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const STORE_PREFIX='sbv8_';
+const STORE_PREFIX='sbv21_';
 const store={
   get(k,d){try{return JSON.parse(localStorage.getItem(STORE_PREFIX+k))??d}catch{return d}},
   set(k,v){
@@ -15,9 +15,9 @@ const store={
 // Migration automatique des identifiants enregistrés par les versions précédentes.
 try{
   for(const key of ['profile','profiles','lastCredentials']){
-    if(localStorage.getItem('sbv8_'+key))continue;
-    const previous=localStorage.getItem('sbv7_'+key)||localStorage.getItem('sbv6_'+key)||localStorage.getItem('sbv9_'+key);
-    if(previous)localStorage.setItem('sbv8_'+key,previous)
+    if(localStorage.getItem('sbv21_'+key))continue;
+    const previous=localStorage.getItem('sbv8_'+key)||localStorage.getItem('sbv9_'+key)||localStorage.getItem('sbv7_'+key)||localStorage.getItem('sbv6_'+key);
+    if(previous)localStorage.setItem('sbv21_'+key,previous)
   }
 }catch{}
 // Nettoyage des anciens catalogues complets responsables des erreurs QuotaExceededError.
@@ -62,9 +62,11 @@ function persistCredentialsNow(value){
   store.set('lastCredentials',value);
   try{window.NativeAndroid?.saveSecret?.('lastCredentials',JSON.stringify(value))}catch{}
   try{window.AndroidApp?.saveCredentials?.(value.name||'',value.server||'',value.username||'',value.password||'')}catch{}
+  try{window.AndroidApp?.saveAccountJson?.(JSON.stringify(value))}catch{}
 }
 function loadPersistedCredentials(){
   let saved=store.get('lastCredentials',null);
+  if(!saved){try{const raw=window.AndroidApp?.loadAccountJson?.();if(raw)saved=JSON.parse(raw)}catch{}}
   if(!saved){try{const raw=window.AndroidApp?.loadCredentials?.();if(raw)saved=JSON.parse(raw)}catch{}}
   if(!saved){try{const raw=window.NativeAndroid?.loadSecret?.('lastCredentials');if(raw)saved=JSON.parse(raw)}catch{}}
   return saved;
@@ -119,6 +121,11 @@ async function connectWith(p){
     const info=await api('');
     if(String(info?.user_info?.auth)!=='1')throw Error('Identifiants refusés');
     profile.expDate=info.user_info.exp_date||null;
+    profile.status=info.user_info.status||'Active';
+    profile.activeConnections=info.user_info.active_cons||0;
+    profile.maxConnections=info.user_info.max_connections||null;
+    profile.createdAt=info.user_info.created_at||null;
+    persistCredentialsNow(profile);
     if(!store.set('profile',profile))throw Error('Impossible d’enregistrer le profil sur ce téléphone');
     saveProfile();
     status('Compte validé. Ouverture de l’application…',false);
@@ -176,7 +183,9 @@ async function loadCatalog(onProgress=()=>{}){
   // Cela évite définitivement QuotaExceededError sur les gros abonnements Xtream.
   return data
 }
-function updateProfileUI(){const name=profile?.name||'Profil',initial=(name[0]||'S').toUpperCase();$('#profileAvatar').textContent=initial;$('#profileLabel').textContent=name;$('#settingsAvatar').textContent=initial;$('#settingsName').textContent=name;$('#settingsServer').textContent=profile?.server||'Mode démo';$('#connectionLabel').textContent=profile?.demo?'Mode démo':'Connecté'}
+function formatAccountDate(timestamp){if(!timestamp)return 'Illimitée / non communiquée';const n=Number(timestamp);if(!Number.isFinite(n)||n<=0)return 'Illimitée / non communiquée';return new Date(n*1000).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function accountRemaining(timestamp){const n=Number(timestamp);if(!Number.isFinite(n)||n<=0)return 'Durée non limitée';const days=Math.ceil((n*1000-Date.now())/86400000);if(days<0)return 'Abonnement expiré';if(days===0)return 'Expire aujourd’hui';return `${days} jour${days>1?'s':''} restant${days>1?'s':''}`}
+function updateProfileUI(){const name=profile?.name||'Profil',initial=(name[0]||'S').toUpperCase();$('#profileAvatar').textContent=initial;$('#profileLabel').textContent=name;$('#settingsAvatar').textContent=initial;$('#settingsName').textContent=name;$('#settingsServer').textContent=profile?.server||'Mode démo';$('#connectionLabel').textContent=profile?.demo?'Mode démo':'Connecté';const validity=$('#accountValidity');if(validity)validity.textContent=profile?.demo?'Mode démonstration':formatAccountDate(profile?.expDate);const remaining=$('#accountRemaining');if(remaining)remaining.textContent=profile?.demo?'Sans abonnement':accountRemaining(profile?.expDate);const user=$('#accountUsername');if(user)user.textContent=profile?.username||'—';const server=$('#accountServer');if(server)server.textContent=profile?.server||'—'}
 function openApp(){setHidden($('#auth'),true);setHidden($('#app'),false);if(profile?.demo)data=demo;updateProfileUI();applySettings();renderProfiles();renderHome();showPage('home',false)}
 function empty(t){return `<div class="empty">${esc(t)}</div>`}
 function isFavorite(type,id){return favorites.some(f=>f.type===type&&String(f.id)===String(id))}
@@ -331,7 +340,6 @@ async function bootstrapApp(){
   }catch(e){
     console.error('Auto-login',e);
     hideStartupSync();
-    store.del('profile');
     profile=null;
     setHidden($('#app'),true);
     setHidden($('#auth'),false);

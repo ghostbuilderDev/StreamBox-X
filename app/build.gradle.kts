@@ -15,8 +15,8 @@ android {
         applicationId = "com.yoann.monapplication"
         minSdk = 24
         targetSdk = 35
-        versionCode = 206756920
-        versionName = "20.0.0"
+        versionCode = 206756921
+        versionName = "21.0.0"
     }
 
     signingConfigs {
