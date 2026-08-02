@@ -178,9 +178,9 @@ jobs:
             echo "============================================================"
             echo " RAPPORT DIAGNOSTIC HTML VERS APK"
             echo "============================================================"
-            echo "Application : Streambox-x"
+            echo "Application : Streambox V16"
             echo "Package     : dev.ghostbuilderdev.shortfactory.shortfactoryv1.a0h9azoz"
-            echo "Version     : 1.0.0 (207858076)"
+            echo "Version     : 16.0.0 (207858727)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -350,13 +350,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/Streambox-x-dev.ghostbuilderdev.shortfactory.shortfactoryv1.a0h9azoz-v207858076-debug.apk"
+          APK_FILE="apk-output/Streambox-V16-dev.ghostbuilderdev.shortfactory.shortfactoryv1.a0h9azoz-v207858727-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
             echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.shortfactory.shortfactoryv1.a0h9azoz"
-            echo "VERSION_CODE_ATTENDU=207858076"
+            echo "VERSION_CODE_ATTENDU=207858727"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -366,13 +366,13 @@ jobs:
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
           [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.shortfactory.shortfactoryv1.a0h9azoz" ] || exit 1
-          [ "$ACTUAL_VERSION" = "207858076" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207858727" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Streambox-x-apk
+          name: Streambox-V16-apk
           path: |
             apk-output/*.apk
             apk-output/apk-verification.txt
