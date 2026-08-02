@@ -1,0 +1,4 @@
+Correctif V21.1
+- Corrige le contrôle GitHub Actions qui attendait encore le versionCode V20 (206756920).
+- Le projet Android génère bien la V21 avec versionCode 206756921.
+- Le nom de l'APK devient StreamBox-X-v21-debug.apk.
