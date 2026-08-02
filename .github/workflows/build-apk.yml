@@ -30,18 +30,18 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Installer Gradle 8.9
+      - name: Installer Gradle 9.5.0
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.9"
+          gradle-version: "9.5.0"
 
-      - name: Installer Android SDK 35
+      - name: Installer Android SDK 36
         uses: android-actions/setup-android@v3
 
-      - name: Installer la plateforme Android 35
+      - name: Installer la plateforme Android 36
         run: |
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager "platforms;android-36" "build-tools;35.0.0"
 
       - name: Vérifier le projet
         shell: bash
@@ -68,6 +68,7 @@ jobs:
               "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8",
               "org.gradle.daemon=false",
               "org.gradle.parallel=false",
+              "android.useAndroidX=true",
           ]
 
           if path.exists():
@@ -77,8 +78,6 @@ jobs:
               for line in content.splitlines():
                   stripped = line.strip()
                   if not stripped:
-                      continue
-                  if stripped.startswith("android.useAndroidX="):
                       continue
                   if stripped.startswith("android.nonTransitiveRClass="):
                       continue
@@ -178,9 +177,9 @@ jobs:
             echo "============================================================"
             echo " RAPPORT DIAGNOSTIC HTML VERS APK"
             echo "============================================================"
-            echo "Application : iPTV player"
+            echo "Application : IPTV Player"
             echo "Package     : dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt"
-            echo "Version     : 1.0.3 (207873037)"
+            echo "Version     : 1.0.6 (207878031)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -350,13 +349,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/iPTV-player-dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt-v207873037-debug.apk"
+          APK_FILE="apk-output/IPTV-Player-dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt-v207878031-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
             echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt"
-            echo "VERSION_CODE_ATTENDU=207873037"
+            echo "VERSION_CODE_ATTENDU=207878031"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -366,13 +365,13 @@ jobs:
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
           [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt" ] || exit 1
-          [ "$ACTUAL_VERSION" = "207873037" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207878031" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: iPTV-player-apk
+          name: IPTV-Player-apk
           path: |
             apk-output/*.apk
             apk-output/apk-verification.txt
