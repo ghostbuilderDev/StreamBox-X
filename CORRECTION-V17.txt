@@ -1,0 +1,8 @@
+STREAMBOX X V17 — CORRECTIONS APPLIQUÉES
+
+1. Compilation : AndroidX + Jetifier forcés.
+2. Cast : média envoyé même si la session TV est déjà active.
+3. Cast : résultat LOAD contrôlé et diagnostic sauvegardé en cas de refus.
+4. VPN : relais HTTP local téléphone -> téléviseur avec HLS et Range.
+5. Connexion : identifiants enregistrés dès la saisie et préremplis au démarrage.
+6. JavaScript : erreur de diagnostic `url` non définie corrigée.

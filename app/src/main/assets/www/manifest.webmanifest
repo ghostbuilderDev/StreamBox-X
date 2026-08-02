@@ -1,0 +1,22 @@
+{
+  "name": "StreamBox Vision Diagnostic Native",
+  "short_name": "StreamBox Native",
+  "description": "Lecteur Xtream avec lecture Android Media3 et Google Cast natifs.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#060816",
+  "theme_color": "#060816",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

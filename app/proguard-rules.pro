@@ -1,0 +1,1 @@
+# Règles ProGuard personnalisées\n

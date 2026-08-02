@@ -1,0 +1,55 @@
+{
+  "generator": "Réparation StreamBox X V17",
+  "generatedAt": "2026-08-02T20:40:00+02:00",
+  "application": {
+    "appName": "StreamBox X",
+    "packageName": "com.yoann.monapplication",
+    "versionName": "17.0.0",
+    "versionCode": 206756917,
+    "nativeCast": true,
+    "vpnCastRelay": true,
+    "credentialMemory": true
+  },
+  "webFiles": [
+    {
+      "path": "android-bridge.js",
+      "bytes": 2794
+    },
+    {
+      "path": "android-config.json",
+      "bytes": 809
+    },
+    {
+      "path": "app.js",
+      "bytes": 53009
+    },
+    {
+      "path": "icons/icon-192.png",
+      "bytes": 15823
+    },
+    {
+      "path": "icons/icon-512.png",
+      "bytes": 46269
+    },
+    {
+      "path": "index.html",
+      "bytes": 23616
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 530
+    },
+    {
+      "path": "service-worker.js",
+      "bytes": 302
+    },
+    {
+      "path": "streambox-native-adapter.js",
+      "bytes": 4189
+    },
+    {
+      "path": "styles.css",
+      "bytes": 33105
+    }
+  ]
+}

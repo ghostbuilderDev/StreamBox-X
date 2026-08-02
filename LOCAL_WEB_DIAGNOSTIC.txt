@@ -1,0 +1,27 @@
+============================================================
+DIAGNOSTIC LOCAL STREAMBOX X V17
+============================================================
+Fichiers Web : 10
+Références analysées : 70
+Ressources manquantes : 0
+AndroidX : activé
+Jetifier : activé
+Lecteur natif Media3 : présent
+Google Cast natif : présent
+Relais Cast/VPN : présent
+Mémorisation identifiants : présente
+
+=== FICHIERS WEB ===
+android-bridge.js
+android-config.json
+app.js
+icons/icon-192.png
+icons/icon-512.png
+index.html
+manifest.webmanifest
+service-worker.js
+streambox-native-adapter.js
+styles.css
+
+=== RESSOURCES MANQUANTES ===
+Aucune
