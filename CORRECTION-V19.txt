@@ -1,0 +1,5 @@
+StreamBox-X V19
+Correction de compilation Media3 :
+- NativePlayerActivity.java
+- Remplacement de error.errorCodeName par error.getErrorCodeName()
+Cette correction résout l'erreur cannot find symbol du run GitHub #16.

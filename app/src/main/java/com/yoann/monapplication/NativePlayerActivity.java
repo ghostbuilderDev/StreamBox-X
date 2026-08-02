@@ -181,7 +181,7 @@ public class NativePlayerActivity extends android.app.Activity {
         player.setMediaItem(item.build());
         player.addListener(new Player.Listener() {
             @Override public void onPlayerError(PlaybackException error) {
-                report("PLAYER_ERROR_" + error.errorCodeName, error);
+                report("PLAYER_ERROR_" + error.getErrorCodeName(), error);
             }
         });
         player.prepare();
