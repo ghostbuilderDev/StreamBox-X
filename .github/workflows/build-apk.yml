@@ -35,13 +35,13 @@ jobs:
         with:
           gradle-version: "9.5.0"
 
-      - name: Installer Android SDK 35
+      - name: Installer Android SDK 36
         uses: android-actions/setup-android@v3
 
-      - name: Installer la plateforme Android 35
+      - name: Installer la plateforme Android 36
         run: |
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager "platforms;android-36" "build-tools;35.0.0"
 
       - name: Vérifier le projet
         shell: bash

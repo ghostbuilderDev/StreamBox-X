@@ -9,7 +9,7 @@ val stableKeyPassword = "HTML_APK_BUILDER_STABLE_2026"
 
 android {
     namespace = "com.yoann.monapplication"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.yoann.monapplication"
