@@ -30,18 +30,18 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Installer Gradle 9.5.0
+      - name: Installer Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "9.5.0"
+          gradle-version: "8.9"
 
-      - name: Installer Android SDK 36
+      - name: Installer Android SDK 35
         uses: android-actions/setup-android@v3
 
-      - name: Installer la plateforme Android 36
+      - name: Installer la plateforme Android 35
         run: |
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager "platforms;android-36" "build-tools;35.0.0"
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: Vérifier le projet
         shell: bash
@@ -180,7 +180,7 @@ jobs:
             echo "============================================================"
             echo "Application : iPTV player"
             echo "Package     : dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8"
-            echo "Version     : 1.0.3 (207870509)"
+            echo "Version     : 1.0.3 (207872350)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -350,13 +350,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/iPTV-player-dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8-v207870509-debug.apk"
+          APK_FILE="apk-output/iPTV-player-dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8-v207872350-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
             echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8"
-            echo "VERSION_CODE_ATTENDU=207870509"
+            echo "VERSION_CODE_ATTENDU=207872350"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -366,7 +366,7 @@ jobs:
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
           [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.htmltoapk.monapplication.a1rsolc8" ] || exit 1
-          [ "$ACTUAL_VERSION" = "207870509" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207872350" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
