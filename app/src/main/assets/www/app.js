@@ -54,9 +54,21 @@ function status(text,error=true){const el=$('#loginStatus');el.textContent=text|
 function castBridge(){return window.StreamBoxCast||window.AndroidCast||window.NativeAndroidCast||null}
 function playerBridge(){return window.StreamBoxPlayer||window.AndroidPlayer||window.NativeAndroidPlayer||null}
 function nativePlayerCapabilities(){const b=playerBridge();if(!b)return{native:false,play:false};try{if(typeof b.getCapabilities==='function')return{native:true,...parseBridgeResult(b.getCapabilities(),{})}}catch(e){console.warn('Player capabilities',e)}return{native:true,play:typeof b.play==='function'}}
-function nativePlayPayload(item,type,episode,url){return{url,title:episode?.title||titleOf(item),subtitle:type==='live'?'En direct':type==='movies'?'Film':'Série',image:imageOf(item,type),mime:castMime(url),isLive:type==='live',startPositionMs:type==='live'?0:Math.round((positions[keyOf(type,item,episode)]?.time||0)*1000)}}
-function launchNativePlayer(item,type,episode,url){const b=playerBridge(),caps=nativePlayerCapabilities();if(!b||!caps.play||typeof b.play!=='function')return false;try{const result=parseBridgeResult(b.play(JSON.stringify(nativePlayPayload(item,type,episode,url))),{ok:true});if(result.ok===false)throw Error(result.error||'Lecteur natif indisponible');return true}catch(e){console.warn('Native player',e);toast(e.message||'Impossible d’ouvrir le lecteur natif');return false}}
+function nativePlayPayload(item,type,episode,url,fallbackUrls=[]){return{url,title:episode?.title||titleOf(item),subtitle:type==='live'?'En direct':type==='movies'?'Film':'Série',image:imageOf(item,type),mime:castMime(url),isLive:type==='live',fallbackUrls,startPositionMs:type==='live'?0:Math.round((positions[keyOf(type,item,episode)]?.time||0)*1000)}}
+function launchNativePlayer(item,type,episode,url,fallbackUrls=[]){const b=playerBridge(),caps=nativePlayerCapabilities();if(!b||!caps.play||typeof b.play!=='function')return false;try{const result=parseBridgeResult(b.play(JSON.stringify(nativePlayPayload(item,type,episode,url,fallbackUrls))),{ok:true});if(result.ok===false)throw Error(result.error||'Lecteur natif indisponible');return true}catch(e){console.warn('Native player',e);toast(e.message||'Impossible d’ouvrir le lecteur natif');return false}}
 function parseBridgeResult(value,fallback={}){if(value==null)return fallback;if(typeof value==='object')return value;try{return JSON.parse(value)}catch{return fallback}}
+function persistCredentialsNow(value){
+  if(!value)return;
+  store.set('lastCredentials',value);
+  try{window.NativeAndroid?.saveSecret?.('lastCredentials',JSON.stringify(value))}catch{}
+  try{window.AndroidApp?.saveCredentials?.(value.name||'',value.server||'',value.username||'',value.password||'')}catch{}
+}
+function loadPersistedCredentials(){
+  let saved=store.get('lastCredentials',null);
+  if(!saved){try{const raw=window.AndroidApp?.loadCredentials?.();if(raw)saved=JSON.parse(raw)}catch{}}
+  if(!saved){try{const raw=window.NativeAndroid?.loadSecret?.('lastCredentials');if(raw)saved=JSON.parse(raw)}catch{}}
+  return saved;
+}
 
 function diagnosticBridge(){return window.StreamBoxDiagnostics||null}
 function sanitizeDiagnosticUrl(raw){try{const u=new URL(raw);const p=u.pathname.split('/');if(['live','movie','series'].includes(p[1])&&p.length>3){p[2]='***USER***';p[3]='***PASSWORD***';u.pathname=p.join('/')}return u.toString()}catch{return String(raw||'').replace(/\/(live|movie|series)\/[^/]+\/[^/]+\//,'/$1/***USER***/***PASSWORD***/')}}
@@ -100,8 +112,7 @@ async function connectWith(p){
   profile={...p,server:normServer(p.server),autoLogin:true};
   // Mémorise immédiatement les champs saisis, même si le serveur est momentanément indisponible.
   const remembered={name:profile.name||'Mon profil',server:profile.server,username:profile.username,password:profile.password};
-  store.set('lastCredentials',remembered);
-  try{window.NativeAndroid?.saveSecret?.('lastCredentials',JSON.stringify(remembered))}catch{}
+  persistCredentialsNow(remembered);
   $('#connectBtn').disabled=true;
   status('Vérification du compte…',false);
   try{
@@ -192,7 +203,31 @@ function doSearch(q){const s=q.trim().toLowerCase();if(s.length<2){$('#searchRes
 async function openDetails(item,type){currentSelection={item,type};currentEpisode=null;$('#detailType').textContent=type==='live'?'EN DIRECT':type==='movies'?'FILM':'SÉRIE';$('#detailTitle').textContent=titleOf(item);$('#detailMeta').textContent=[item.genre,item.releaseDate||item.releasedate,item.rating?'★ '+item.rating:''].filter(Boolean).join(' • ');$('#detailPlot').textContent=item.plot||item.description||'Aucune description disponible.';const img=imageOf(item,type);$('#detailBackdrop').style.backgroundImage=img?`url('${img}')`:'linear-gradient(145deg,#25305c,#5a246b)';$('#detailFavorite').classList.toggle('active',isFavorite(type,itemId(type,item)));$('#episodesBlock').innerHTML='';setHidden($('#detailsSheet'),false);pushState('overlay','details');if(type==='series'){if(profile.demo){renderEpisodes(item,[{id:1,title:'Épisode de démonstration',container_extension:'mp4',info:{duration:'02:00',movie_image:img}}]);return}$('#episodesBlock').innerHTML='<div class="empty">Chargement des épisodes…</div>';try{const info=await api('get_series_info',{series_id:item.series_id});renderEpisodes(item,Object.values(info.episodes||{}).flat())}catch{$('#episodesBlock').innerHTML='<div class="empty">Impossible de charger les épisodes.</div>'}}}
 function renderEpisodes(item,eps){$('#episodesBlock').innerHTML=eps.length?'<h2>Épisodes</h2>'+eps.map((e,i)=>`<button class="episode-row" data-ep="${i}"><div class="episode-image" style="background-image:url('${esc(e.info?.movie_image||imageOf(item,'series'))}')"></div><div><b>${esc(e.title||'Épisode '+(i+1))}</b><small>${esc(e.info?.duration||'')}</small></div>${icon('i-chevron')}</button>`).join(''):'<div class="empty">Aucun épisode disponible</div>';$('#episodesBlock').onclick=e=>{const row=e.target.closest('[data-ep]');if(!row)return;currentEpisode=eps[+row.dataset.ep];play(item,'series',currentEpisode)}}
 function closeDetails(){setHidden($('#detailsSheet'),true);$('#detailSheet').style.transform=''}
-function streamUrl(item,type,episode){if(profile.demo){if(type==='live')return'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';if(type==='movies')return'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';return'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}if(type==='live')return`${profile.server}/live/${encodeURIComponent(profile.username)}/${encodeURIComponent(profile.password)}/${item.stream_id}.${settings.liveFormat||'m3u8'}`;if(type==='movies')return`${profile.server}/movie/${encodeURIComponent(profile.username)}/${encodeURIComponent(profile.password)}/${item.stream_id}.${item.container_extension||'mp4'}`;if(episode)return`${profile.server}/series/${encodeURIComponent(profile.username)}/${encodeURIComponent(profile.password)}/${episode.id}.${episode.container_extension||'mp4'}`;return''}
+function streamUrl(item,type,episode){
+  if(profile.demo){if(type==='live')return'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';if(type==='movies')return'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';return'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}
+  if(item?.direct_source&&/^https?:/i.test(item.direct_source))return item.direct_source;
+  const user=encodeURIComponent(profile.username),pass=encodeURIComponent(profile.password);
+  if(type==='live')return`${profile.server}/live/${user}/${pass}/${item.stream_id}.${settings.liveFormat||'m3u8'}`;
+  if(type==='movies')return`${profile.server}/movie/${user}/${pass}/${item.stream_id}.${item.container_extension||'mp4'}`;
+  if(episode){if(episode.direct_source&&/^https?:/i.test(episode.direct_source))return episode.direct_source;return`${profile.server}/series/${user}/${pass}/${episode.id}.${episode.container_extension||'mp4'}`}
+  return''
+}
+function streamCandidates(item,type,episode,primary){
+  const values=[primary];
+  if(!profile?.demo&&type==='movies'&&!item?.direct_source){
+    const base=`${profile.server}/movie/${encodeURIComponent(profile.username)}/${encodeURIComponent(profile.password)}/${item.stream_id}`;
+    for(const ext of [item.container_extension,'mp4','mkv','avi','ts'])if(ext)values.push(`${base}.${ext}`)
+  }
+  return [...new Set(values.filter(Boolean))]
+}
+async function resolveMovieSource(item){
+  if(profile?.demo||item?.direct_source)return item;
+  try{
+    const info=await api('get_vod_info',{vod_id:item.stream_id});
+    const movie=info?.movie_data||{};
+    return {...item,...movie,container_extension:movie.container_extension||item.container_extension,direct_source:movie.direct_source||item.direct_source};
+  }catch{return item}
+}
 function addHistory(item,type,episode){const key=keyOf(type,item,episode);watchHistory=[{item,type,episode,key,date:Date.now()},...watchHistory.filter(h=>h.key!==key)].slice(0,50);store.set('history',watchHistory)}
 function destroyPlayback(){if(hls){hls.destroy();hls=null}if(dash){dash.reset();dash=null}}
 function showVideoError(){setHidden($('#videoLoader'),true);setHidden($('#videoError'),false);saveDiagnostic('webview_video_error',{attemptedMime:castMime(lastStreamUrl),hlsJs:!!window.Hls},true);setHidden($('#centerPlay'),true)}
@@ -200,7 +235,18 @@ function startPlayback(url){lastStreamUrl=url;setHidden($('#remoteCastOverlay'),
 function resumePlayback(v){if(!settings.resume||!currentSelection||currentSelection.type==='live')return;const p=positions[keyOf(currentSelection.type,currentSelection.item,currentEpisode)];if(!p||p.time<10||p.time>p.duration-12)return;const apply=()=>{try{v.currentTime=p.time;$('#resumeToast span').textContent=`Reprise à ${formatTime(p.time)}`;setHidden($('#resumeToast'),false);setTimeout(()=>setHidden($('#resumeToast'),true),2300)}catch{}};v.readyState>=1?apply():v.addEventListener('loadedmetadata',apply,{once:true})}
 function savePosition(force=false){const v=$('#video');if(!settings.resume||!currentSelection||currentSelection.type==='live'||!isFinite(v.duration)||!v.duration)return;if(!force&&v.currentTime<4)return;positions[keyOf(currentSelection.type,currentSelection.item,currentEpisode)]={time:v.currentTime,duration:v.duration,updated:Date.now()};store.set('positions',positions)}
 function formatTime(sec){sec=Math.floor(sec||0);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`}
-async function play(item,type,episode=null){const url=streamUrl(item,type,episode);if(!url){toast(type==='series'?'Choisis un épisode':'Flux indisponible');return}currentSelection={item,type};currentEpisode=episode;lastStreamUrl=url;addHistory(item,type,episode);closeDetails();if(launchNativePlayer(item,type,episode,url)){toast('Ouverture du lecteur natif…');return}$('#playingTitle').textContent=episode?.title||titleOf(item);$('#playingSubtitle').textContent=type==='live'?'En direct':type==='movies'?'Film':'Série';$('#playerNowTitle').textContent=episode?.title||titleOf(item);$('#playerNowMeta').textContent=[item.genre,item.rating?'★ '+item.rating:''].filter(Boolean).join(' • ');setHidden($('#liveBadge'),type!=='live');setHidden($('#epgSection'),type!=='live');setHidden($('#playerOverlay'),false);pushState('overlay','player');if(settings.external){openExternalPayload(nativePlayPayload(item,type,episode,url));return}if(castState==='connected'){try{const payload=currentCastPayload();if(castBridge())await castViaNative(payload);else await castViaWeb(payload);setHidden($('#remoteCastOverlay'),false)}catch{startPlayback(url)}}else startPlayback(url);if(type==='live')loadEpg(item)}
+async function play(item,type,episode=null){
+  let resolved=item;
+  if(type==='movies')resolved=await resolveMovieSource(item);
+  const url=streamUrl(resolved,type,episode);
+  if(!url){toast(type==='series'?'Choisis un épisode':'Flux indisponible');return}
+  const fallbacks=streamCandidates(resolved,type,episode,url).slice(1);
+  currentSelection={item:resolved,type};currentEpisode=episode;lastStreamUrl=url;addHistory(resolved,type,episode);closeDetails();
+  if(launchNativePlayer(resolved,type,episode,url,fallbacks)){toast('Ouverture du lecteur…');return}
+  $('#playingTitle').textContent=episode?.title||titleOf(resolved);$('#playingSubtitle').textContent=type==='live'?'En direct':type==='movies'?'Film':'Série';$('#playerNowTitle').textContent=episode?.title||titleOf(resolved);$('#playerNowMeta').textContent=[resolved.genre,resolved.rating?'★ '+resolved.rating:''].filter(Boolean).join(' • ');setHidden($('#liveBadge'),type!=='live');setHidden($('#epgSection'),type!=='live');setHidden($('#playerOverlay'),false);pushState('overlay','player');
+  if(settings.external){openExternalPayload(nativePlayPayload(resolved,type,episode,url,fallbacks));return}
+  if(castState==='connected'){try{const payload=currentCastPayload();if(castBridge())await castViaNative(payload);else await castViaWeb(payload);setHidden($('#remoteCastOverlay'),false)}catch{startPlayback(url)}}else startPlayback(url);if(type==='live')loadEpg(resolved)
+}
 function closePlayer(){savePosition(true);destroyPlayback();const v=$('#video');v.pause();v.removeAttribute('src');v.load();setHidden($('#playerOverlay'),true);renderContinue()}
 async function loadEpg(item){$('#epgList').innerHTML='<div class="empty">Chargement du programme…</div>';if(profile.demo){$('#epgList').innerHTML='<article class="epg-item"><time>Maintenant</time><b>Programme de démonstration</b><p>Le guide TV apparaîtra ici avec ton service.</p><div class="epg-progress"><i style="width:45%"></i></div></article>';return}try{const r=await api('get_short_epg',{stream_id:item.stream_id,limit:8}),list=r.epg_listings||[];$('#epgList').innerHTML=list.map((x,i)=>{const progress=i===0?epgProgress(x.start_timestamp,x.stop_timestamp):0;return`<article class="epg-item"><time>${fmtEpg(x.start_timestamp,x.stop_timestamp)}</time><b>${esc(decode64(x.title))}</b><p>${esc(decode64(x.description))}</p>${i===0?`<div class="epg-progress"><i style="width:${progress}%"></i></div>`:''}</article>`}).join('')||'<div class="empty">Programme indisponible</div>'}catch{$('#epgList').innerHTML='<div class="empty">Programme indisponible</div>'}}
 function decode64(s){try{return decodeURIComponent(escape(atob(s||'')))}catch{return s||''}}
@@ -208,20 +254,10 @@ function fmtEpg(a,b){const f=x=>new Date(Number(x)*1000).toLocaleTimeString('fr-
 function epgProgress(a,b){const n=Date.now()/1000,start=+a,end=+b;return Math.max(0,Math.min(100,(n-start)/(end-start)*100))}
 function applySettings(){$('#autoplaySetting').checked=!!settings.autoplay;$('#resumeSetting').checked=!!settings.resume;$('#externalSetting').checked=!!settings.external;$('#liveFormat').value=settings.liveFormat||'m3u8'}
 function logout(){store.del('profile');profile=null;setHidden($('#app'),true);setHidden($('#auth'),false);renderProfiles();window.scrollTo(0,0)}
-let rememberLoginTimer=null;
 function rememberLoginForm(){
-  clearTimeout(rememberLoginTimer);
-  rememberLoginTimer=setTimeout(()=>{
-    const remembered={
-      name:$('#profileName')?.value.trim()||'Mon profil',
-      server:normServer($('#server')?.value||''),
-      username:$('#username')?.value.trim()||'',
-      password:$('#password')?.value||''
-    };
-    if(!remembered.server&&!remembered.username&&!remembered.password)return;
-    store.set('lastCredentials',remembered);
-    try{window.NativeAndroid?.saveSecret?.('lastCredentials',JSON.stringify(remembered))}catch{}
-  },180)
+  const remembered={name:$('#profileName')?.value.trim()||'Mon profil',server:normServer($('#server')?.value||''),username:$('#username')?.value.trim()||'',password:$('#password')?.value||''};
+  if(!remembered.server&&!remembered.username&&!remembered.password)return;
+  persistCredentialsNow(remembered);
 }
 ['profileName','server','username','password'].forEach(id=>$('#'+id)?.addEventListener('input',rememberLoginForm));
 $('#loginForm').onsubmit=e=>{e.preventDefault();rememberLoginForm();connectWith({name:$('#profileName').value.trim()||'Mon profil',server:normServer($('#server').value),username:$('#username').value.trim(),password:$('#password').value,demo:false})};
@@ -249,10 +285,7 @@ window.addEventListener('scroll',()=>{if($('#catalogPage').classList.contains('a
 window.addEventListener('popstate',()=>closeTopLayer());window.addEventListener('online',()=>setHidden($('#offlineBanner'),true));window.addEventListener('offline',()=>setHidden($('#offlineBanner'),false));setHidden($('#offlineBanner'),navigator.onLine);
 renderProfiles();applySettings();initCastSdk();updateCastPanel();
 function prefillLoginForm(){
-  let saved=store.get('lastCredentials',null);
-  if(!saved){
-    try{const raw=window.NativeAndroid?.loadSecret?.('lastCredentials');if(raw)saved=JSON.parse(raw)}catch{}
-  }
+  let saved=loadPersistedCredentials();
   const source=profile&&!profile.demo?profile:saved;
   if(!source)return;
   if($('#profileName'))$('#profileName').value=source.name||'Mon profil';

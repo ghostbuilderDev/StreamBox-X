@@ -1,10 +1,12 @@
 package com.yoann.monapplication;
 
+import android.Manifest;
 import android.app.PictureInPictureParams;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -46,7 +48,11 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import org.json.JSONArray;
 
 public class NativePlayerActivity extends android.app.Activity {
     private ExoPlayer player;
@@ -62,6 +68,9 @@ public class NativePlayerActivity extends android.app.Activity {
     private CastContext castContext;
     private MediaRouteButton castButton;
     private CastProxyServer castProxyServer;
+    private final List<String> playbackUrls = new ArrayList<>();
+    private int playbackUrlIndex = 0;
+    private boolean openCastRequested = false;
 
     private final SessionManagerListener<CastSession> castListener = new SessionManagerListener<CastSession>() {
         @Override public void onSessionStarted(CastSession session, String id) { loadRemote(session, false); }
@@ -88,14 +97,24 @@ public class NativePlayerActivity extends android.app.Activity {
         mimeType = value(getIntent().getStringExtra("mimeType"), inferMime(url));
         contentType = value(getIntent().getStringExtra("contentType"), "video");
         poster = value(getIntent().getStringExtra("poster"), "");
+        openCastRequested = getIntent().getBooleanExtra("openCast", false);
         if (url == null || url.trim().isEmpty()) { finish(); return; }
+        playbackUrls.add(url);
+        try {
+            JSONArray fallback = new JSONArray(value(getIntent().getStringExtra("fallbackUrlsJson"), "[]"));
+            for (int i = 0; i < fallback.length(); i++) {
+                String candidate = fallback.optString(i, "").trim();
+                if (!candidate.isEmpty() && !playbackUrls.contains(candidate)) playbackUrls.add(candidate);
+            }
+        } catch (Exception ignored) {}
+
 
         buildUi();
         initCast();
         initPlayer();
 
-        if (getIntent().getBooleanExtra("openCast", false)) {
-            openOrLoadCast();
+        if (openCastRequested) {
+            requestCastPermissionsAndOpen();
         }
     }
 
@@ -128,6 +147,11 @@ public class NativePlayerActivity extends android.app.Activity {
         castButton = new MediaRouteButton(this);
         top.addView(castButton, new LinearLayout.LayoutParams(56, 56));
 
+        Button castText = new Button(this);
+        castText.setText("Caster");
+        castText.setOnClickListener(v -> requestCastPermissionsAndOpen());
+        top.addView(castText, new LinearLayout.LayoutParams(110, 56));
+
         Button diag = new Button(this);
         diag.setText("Diag");
         diag.setOnClickListener(v -> saveDiagnostic(lastDiagnostic.isEmpty() ? buildDiagnostic("MANUAL", null) : lastDiagnostic));
@@ -144,14 +168,38 @@ public class NativePlayerActivity extends android.app.Activity {
             CastButtonFactory.setUpMediaRouteButton(getApplicationContext(), castButton);
             castContext.getSessionManager().addSessionManagerListener(castListener, CastSession.class);
         } catch (Throwable error) {
-            castButton.setVisibility(View.GONE);
-            report("CAST_INIT_FAILED", error);
+            castContext = null;
+            Toast.makeText(this, "Module Cast indisponible : " + value(error.getMessage(), "erreur inconnue"), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void requestCastPermissionsAndOpen() {
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.NEARBY_WIFI_DEVICES}, 4301);
+            return;
+        }
+        if (Build.VERSION.SDK_INT < 33 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 4301);
+            return;
+        }
+        openOrLoadCast();
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 4301) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) openOrLoadCast();
+            else Toast.makeText(this, "Autorisation Wi-Fi requise pour détecter le téléviseur", Toast.LENGTH_LONG).show();
         }
     }
 
     /** Charge immédiatement le média si une TV est déjà connectée. Sinon ouvre le sélecteur Cast. */
     private void openOrLoadCast() {
-        if (castContext == null) return;
+        if (castContext == null) initCast();
+        if (castContext == null) {
+            Toast.makeText(this, "Impossible d'initialiser Google Cast", Toast.LENGTH_LONG).show();
+            return;
+        }
         CastSession current = castContext.getSessionManager().getCurrentCastSession();
         if (current != null && current.isConnected()) {
             loadRemote(current, true);
@@ -163,27 +211,37 @@ public class NativePlayerActivity extends android.app.Activity {
     private void initPlayer() {
         DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
                 .setAllowCrossProtocolRedirects(true)
-                .setConnectTimeoutMs(20_000)
-                .setReadTimeoutMs(45_000)
+                .setConnectTimeoutMs(25_000)
+                .setReadTimeoutMs(60_000)
                 .setUserAgent("VLC/3.0.21 LibVLC/3.0.21");
 
         player = new ExoPlayer.Builder(this)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(http))
                 .build();
         playerView.setPlayer(player);
+        player.addListener(new Player.Listener() {
+            @Override public void onPlayerError(PlaybackException error) {
+                if (playbackUrlIndex + 1 < playbackUrls.size()) {
+                    playbackUrlIndex++;
+                    url = playbackUrls.get(playbackUrlIndex);
+                    Toast.makeText(NativePlayerActivity.this, "Nouvelle tentative de lecture…", Toast.LENGTH_SHORT).show();
+                    loadCurrentMedia();
+                    return;
+                }
+                report("PLAYER_ERROR_" + error.getErrorCodeName(), error);
+            }
+        });
+        loadCurrentMedia();
+    }
 
+    private void loadCurrentMedia() {
+        if (player == null) return;
         MediaItem.Builder item = new MediaItem.Builder()
                 .setUri(url)
                 .setMediaMetadata(new MediaMetadata.Builder().setTitle(title).build());
         String inferred = inferMime(url);
         if (inferred != null) item.setMimeType(inferred);
-
-        player.setMediaItem(item.build());
-        player.addListener(new Player.Listener() {
-            @Override public void onPlayerError(PlaybackException error) {
-                report("PLAYER_ERROR_" + error.getErrorCodeName(), error);
-            }
-        });
+        player.setMediaItem(item.build(), true);
         player.prepare();
         player.play();
     }
@@ -391,7 +449,12 @@ public class NativePlayerActivity extends android.app.Activity {
 
     @Override protected void onStop() {
         super.onStop();
-        if (!isInPictureInPictureMode() && lastLoadedSessionId.isEmpty()) releasePlayer();
+        if (player != null && !isInPictureInPictureMode() && lastLoadedSessionId.isEmpty()) player.pause();
+    }
+
+    @Override protected void onStart() {
+        super.onStart();
+        if (player != null && lastLoadedSessionId.isEmpty()) player.play();
     }
 
     @Override protected void onDestroy() {

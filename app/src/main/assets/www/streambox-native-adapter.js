@@ -25,9 +25,9 @@
   nativeIptvAvailable: function () {
     try { return this.available() && !!window.AndroidApp.supportsNativeIptv(); } catch(e) { return false; }
   },
-  playNative: function (url,title,type,poster) {
+  playNative: function (url,title,type,poster,fallbackUrls) {
     if (!this.nativeIptvAvailable()) throw new Error("Mode IPTV natif absent de cet APK");
-    return window.AndroidApp.playNative(String(url),String(title||"Lecture"),String(type||"video"),String(poster||""));
+    return window.AndroidApp.playNative(String(url),String(title||"Lecture"),String(type||"video"),String(poster||""),JSON.stringify(Array.isArray(fallbackUrls)?fallbackUrls:[]));
   },
   castNative: function (url,title,mime,poster) {
     if (!this.nativeIptvAvailable()) throw new Error("Google Cast natif absent de cet APK");
@@ -72,7 +72,7 @@ window.NativeAndroidPlayer = {
   play: function(payload){
     try{
       const p=typeof payload==='string'?JSON.parse(payload):payload;
-      window.NativeAndroid.playNative(p.url,p.title,p.isLive?'live':'video',p.image||'');
+      window.NativeAndroid.playNative(p.url,p.title,p.isLive?'live':'video',p.image||'',p.fallbackUrls||[]);
       return JSON.stringify({ok:true});
     }catch(e){return JSON.stringify({ok:false,error:e&&e.message?e.message:String(e)})}
   }

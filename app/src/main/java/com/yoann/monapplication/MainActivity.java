@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(false);
         settings.setMediaPlaybackRequiresUserGesture(false);
-        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
         webView.setWebViewClient(new WebViewClient() {
             private boolean handleUri(Uri uri) {
@@ -876,7 +876,7 @@ public class MainActivity extends Activity {
         public boolean supportsNativeIptv() { return true; }
 
         @JavascriptInterface
-        public void playNative(final String url, final String title, final String contentType, final String poster) {
+        public void playNative(final String url, final String title, final String contentType, final String poster, final String fallbackUrlsJson) {
             activity.runOnUiThread(() -> {
                 try {
                     Intent intent = new Intent(activity, NativePlayerActivity.class);
@@ -884,6 +884,7 @@ public class MainActivity extends Activity {
                     intent.putExtra("title", title);
                     intent.putExtra("contentType", contentType);
                     intent.putExtra("poster", poster);
+                    intent.putExtra("fallbackUrlsJson", fallbackUrlsJson == null ? "[]" : fallbackUrlsJson);
                     activity.startActivity(intent);
                 } catch (Exception error) {
                     Toast.makeText(activity, "Lecteur natif indisponible : " + error.getMessage(), Toast.LENGTH_LONG).show();
@@ -929,6 +930,32 @@ public class MainActivity extends Activity {
                 .getString(key, "");
         }
 
+
+        @JavascriptInterface
+        public void saveCredentials(String name, String server, String username, String password) {
+            activity.getSharedPreferences("secure_profile", Context.MODE_PRIVATE)
+                .edit()
+                .putString("credential_name", name == null ? "" : name)
+                .putString("credential_server", server == null ? "" : server)
+                .putString("credential_username", username == null ? "" : username)
+                .putString("credential_password", password == null ? "" : password)
+                .commit();
+        }
+
+        @JavascriptInterface
+        public String loadCredentials() {
+            android.content.SharedPreferences prefs = activity.getSharedPreferences("secure_profile", Context.MODE_PRIVATE);
+            try {
+                org.json.JSONObject value = new org.json.JSONObject();
+                value.put("name", prefs.getString("credential_name", ""));
+                value.put("server", prefs.getString("credential_server", ""));
+                value.put("username", prefs.getString("credential_username", ""));
+                value.put("password", prefs.getString("credential_password", ""));
+                return value.toString();
+            } catch (Exception ignored) {
+                return "{}";
+            }
+        }
 
         @JavascriptInterface
         public String getPackageName() {
