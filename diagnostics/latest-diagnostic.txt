@@ -1,70 +1,14 @@
 ============================================================
  PRIME IPTV PLAYER V5 — DIAGNOSTIC
 ============================================================
-Run : #2
-URL : https://github.com/ghostbuilderDev/StreamBox-X/actions/runs/30806338157
-Date UTC : 2026-08-03 10:39:12 UTC
-Code Gradle : 0
+Run : #3
+URL : https://github.com/ghostbuilderDev/StreamBox-X/actions/runs/30825035602
+Date UTC : 2026-08-03 14:56:43 UTC
+Code Gradle : 99
 
 === ERREURS ===
 
 === JOURNAL GRADLE ===
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-Daemon will be stopped at the end of the build 
-> Task :app:preBuild UP-TO-DATE
-> Task :app:preDebugBuild UP-TO-DATE
-> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
-> Task :app:generateDebugBuildConfig
-> Task :app:generateDebugResources
-> Task :app:packageDebugResources
-> Task :app:processDebugNavigationResources
-> Task :app:generateDebugAssets UP-TO-DATE
-> Task :app:javaPreCompileDebug
-> Task :app:parseDebugLocalResources
-> Task :app:mergeDebugAssets
-> Task :app:compressDebugAssets
-> Task :app:generateDebugRFile
-> Task :app:generateDebugGlobalSynthetics
-> Task :app:compileDebugKotlin NO-SOURCE
-
-> Task :app:compileDebugJavaWithJavac
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-
-> Task :app:processDebugJavaRes
-> Task :app:desugarDebugFileDependencies
-> Task :app:checkDebugDuplicateClasses
-> Task :app:checkDebugAarMetadata
-> Task :app:mergeDebugJavaResource
-> Task :app:mapDebugSourceSetPaths
-> Task :app:mergeLibDexDebug
-> Task :app:compileDebugNavigationResources
-> Task :app:createDebugCompatibleScreenManifests
-> Task :app:extractDeepLinksDebug
-> Task :app:mergeDebugResources
-> Task :app:processDebugMainManifest
-> Task :app:processDebugManifest
-> Task :app:mergeDebugJniLibFolders
-> Task :app:processDebugManifestForPackage
-> Task :app:mergeDebugNativeLibs
-> Task :app:validateSigningDebug
-> Task :app:writeDebugAppMetadata
-> Task :app:writeDebugSigningConfigVersions
-> Task :app:stripDebugDebugSymbols
-> Task :app:processDebugResources
-> Task :app:dexBuilderDebug
-> Task :app:mergeProjectDexDebug
-> Task :app:mergeExtDexDebug
-> Task :app:packageDebug
-> Task :app:createDebugApkListingFileRedirect
-> Task :app:assembleDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/compile-1785753525758.json
-
-[Incubating] Problems report is available at: file:///home/runner/work/StreamBox-X/StreamBox-X/generated/build/reports/problems/problems-report.html
-
-BUILD SUCCESSFUL in 28s
-37 actionable tasks: 37 executed
-Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.0/userguide/configuration_cache_enabling.html
 
 === APK ===
 package: name='dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt' versionCode='208006001' versionName='6.0.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
