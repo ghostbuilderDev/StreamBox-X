@@ -1,0 +1,143 @@
+name: Build Prime IPTV Player V6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - project.zip
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: prime-iptv-v6-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.5.0"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Installer Android SDK 36
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager "platforms;android-36" "build-tools;35.0.0" "platform-tools"
+
+      - name: Extraire et contrôler le projet
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf generated
+          mkdir -p generated
+          unzip -q project.zip -d generated
+          test -f generated/settings.gradle.kts
+          test -f generated/app/build.gradle.kts
+          test -f generated/app/src/main/AndroidManifest.xml
+          test -f generated/app/src/main/java/dev/ghostbuilderdev/streamboxx/iptvplayer/a15jnnqt/NativePlayerOverlay.java
+          test -f generated/app/src/main/java/dev/ghostbuilderdev/streamboxx/iptvplayer/a15jnnqt/CastProxyServer.java
+          ! grep -q 'android:name=".PlayerActivity"' generated/app/src/main/AndroidManifest.xml
+
+      - name: Préparer la signature stable
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .signing generated/.signing
+          KEYSTORE=.signing/html-apk-stable.p12
+          FP=.signing/html-apk-stable.sha256
+          if [ ! -f "$KEYSTORE" ]; then
+            keytool -genkeypair \
+              -keystore "$KEYSTORE" \
+              -storetype PKCS12 \
+              -storepass "HTML_APK_BUILDER_STABLE_2026" \
+              -keypass "HTML_APK_BUILDER_STABLE_2026" \
+              -alias "html-apk-stable" \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Prime IPTV Player, OU=Android, O=GhostBuilder, L=Paris, ST=Ile-de-France, C=FR"
+          fi
+          CURRENT=$(keytool -list -v -keystore "$KEYSTORE" -storetype PKCS12 \
+            -storepass "HTML_APK_BUILDER_STABLE_2026" -alias "html-apk-stable" 2>/dev/null \
+            | awk -F'SHA256: ' '/SHA256:/{gsub(":","",$2); print tolower($2); exit}')
+          test -n "$CURRENT"
+          if [ -f "$FP" ]; then test "$CURRENT" = "$(tr -d '[:space:]' < "$FP")"; else printf '%s\n' "$CURRENT" > "$FP"; fi
+          cp "$KEYSTORE" "$FP" generated/.signing/
+
+      - name: Compiler l’APK
+        id: compile
+        shell: bash
+        run: |
+          set +e
+          set -o pipefail
+          cd generated
+          gradle --no-daemon --console=plain :app:assembleDebug --stacktrace 2>&1 | tee ../build.log
+          CODE=${PIPESTATUS[0]}
+          cd ..
+          echo "$CODE" > build-exit-code.txt
+          exit 0
+
+      - name: Produire APK et diagnostic
+        if: always()
+        shell: bash
+        run: |
+          set -u
+          CODE=$(cat build-exit-code.txt 2>/dev/null || echo 99)
+          mkdir -p apk-output diagnostics
+          if [ "$CODE" = "0" ] && [ -f generated/app/build/outputs/apk/debug/app-debug.apk ]; then
+            cp generated/app/build/outputs/apk/debug/app-debug.apk apk-output/Prime-IPTV-Player-V6-latest.apk
+            "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging apk-output/Prime-IPTV-Player-V6-latest.apk > apk-output/apk-verification.txt
+            "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs apk-output/Prime-IPTV-Player-V6-latest.apk >> apk-output/apk-verification.txt
+          fi
+          {
+            echo "============================================================"
+            echo " PRIME IPTV PLAYER V6 — DIAGNOSTIC"
+            echo "============================================================"
+            echo "Run : #${{ github.run_number }}"
+            echo "URL : https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Date UTC : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            echo "Code Gradle : $CODE"
+            echo
+            echo "=== ERREURS ==="
+            grep -nEi "error:|FAILURE:|What went wrong|Execution failed|Exception|Caused by:" build.log 2>/dev/null | tail -n 400 || true
+            echo
+            echo "=== JOURNAL GRADLE ==="
+            tail -n 1000 build.log 2>/dev/null || true
+            echo
+            echo "=== APK ==="
+            cat apk-output/apk-verification.txt 2>/dev/null || echo "Aucun APK produit"
+          } > diagnostics/latest-diagnostic.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .signing diagnostics apk-output
+          if ! git diff --cached --quiet; then
+            git commit -m "Prime IPTV V6 build result #${{ github.run_number }} [skip ci]"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
+          exit "$CODE"
+
+      - name: Publier les fichiers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Prime-IPTV-V6-result-${{ github.run_number }}
+          path: |
+            apk-output/*
+            diagnostics/latest-diagnostic.txt
+            build.log
+          if-no-files-found: warn
+          retention-days: 30
