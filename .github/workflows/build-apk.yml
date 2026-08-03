@@ -69,6 +69,7 @@ jobs:
               "org.gradle.daemon=false",
               "org.gradle.parallel=false",
               "android.useAndroidX=true",
+              "android.enableJetifier=true",
           ]
 
           if path.exists():
@@ -177,9 +178,9 @@ jobs:
             echo "============================================================"
             echo " RAPPORT DIAGNOSTIC HTML VERS APK"
             echo "============================================================"
-            echo "Application : IPTV Player"
+            echo "Application : iPTV player"
             echo "Package     : dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt"
-            echo "Version     : 3.0.1 (207932138)"
+            echo "Version     : 2.0.1 (207933239)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -349,13 +350,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/IPTV-Player-dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt-v207932138-debug.apk"
+          APK_FILE="apk-output/iPTV-player-dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt-v207933239-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
             echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt"
-            echo "VERSION_CODE_ATTENDU=207932138"
+            echo "VERSION_CODE_ATTENDU=207933239"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -365,13 +366,13 @@ jobs:
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
           [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt" ] || exit 1
-          [ "$ACTUAL_VERSION" = "207932138" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207933239" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: IPTV-Player-apk
+          name: iPTV-player-apk
           path: |
             apk-output/*.apk
             apk-output/apk-verification.txt
