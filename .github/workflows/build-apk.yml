@@ -179,7 +179,7 @@ jobs:
             echo "============================================================"
             echo "Application : IPTV Player"
             echo "Package     : dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt"
-            echo "Version     : 1.0.7 (207906433)"
+            echo "Version     : 1.0.8 (207907792)"
             echo "Date UTC    : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "Dépôt       : ${{ github.repository }}"
             echo "Branche     : ${{ github.ref_name }}"
@@ -349,13 +349,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p apk-output
-          APK_FILE="apk-output/IPTV-Player-dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt-v207906433-debug.apk"
+          APK_FILE="apk-output/IPTV-Player-dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt-v207907792-debug.apk"
           cp generated/app/build/outputs/apk/debug/app-debug.apk "$APK_FILE"
 
           {
             echo "APK=$APK_FILE"
             echo "PACKAGE_ATTENDU=dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt"
-            echo "VERSION_CODE_ATTENDU=207906433"
+            echo "VERSION_CODE_ATTENDU=207907792"
             echo "SHA256=$(sha256sum "$APK_FILE" | awk '{print $1}')"
             "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | head -n 8
             "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK_FILE"
@@ -365,7 +365,7 @@ jobs:
           ACTUAL_VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK_FILE" | awk -F"'" '/^package: name=/{print $4; exit}')
 
           [ "$ACTUAL_PACKAGE" = "dev.ghostbuilderdev.streamboxx.iptvplayer.a15jnnqt" ] || exit 1
-          [ "$ACTUAL_VERSION" = "207906433" ] || exit 1
+          [ "$ACTUAL_VERSION" = "207907792" ] || exit 1
 
       - name: Publier l’APK comme artefact
         if: success()
