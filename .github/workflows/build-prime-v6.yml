@@ -1,7 +1,6 @@
 name: Build Prime IPTV Player V6
 
 on:
-  workflow_dispatch:
   push:
     branches: [main, master]
     paths:
